@@ -14,7 +14,18 @@ const frontendDir = path.resolve(__dirname, "../../frontend");
 const app = express();
 
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: env.appOrigin, credentials: true }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || origin === env.appOrigin) {
+        return callback(null, true);
+      }
+
+      return callback(null, false);
+    },
+    credentials: true
+  })
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 

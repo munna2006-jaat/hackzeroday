@@ -2,6 +2,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+function cleanEnv(value, fallback = "") {
+  return String(value || fallback)
+    .trim()
+    .replace(/^["']|["']$/g, "");
+}
+
 const required = ["DATABASE_URL", "JWT_SECRET"];
 
 for (const key of required) {
@@ -11,15 +17,15 @@ for (const key of required) {
 }
 
 export const env = {
-  appOrigin: process.env.APP_ORIGIN || "http://localhost:4174",
-  databaseUrl: process.env.DATABASE_URL,
-  emailFrom: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-  emailHost: process.env.EMAIL_HOST || "smtp.gmail.com",
-  emailPass: process.env.EMAIL_PASS,
-  emailPort: Number(process.env.EMAIL_PORT || 465),
+  appOrigin: cleanEnv(process.env.APP_ORIGIN, "http://localhost:4174"),
+  databaseUrl: cleanEnv(process.env.DATABASE_URL),
+  emailFrom: cleanEnv(process.env.EMAIL_FROM, process.env.EMAIL_USER),
+  emailHost: cleanEnv(process.env.EMAIL_HOST, "smtp.gmail.com"),
+  emailPass: cleanEnv(process.env.EMAIL_PASS),
+  emailPort: Number(cleanEnv(process.env.EMAIL_PORT, 465)),
   emailSecure: String(process.env.EMAIL_SECURE || "true") === "true",
-  emailUser: process.env.EMAIL_USER,
-  jwtSecret: process.env.JWT_SECRET || "dev-only-change-this-secret",
-  otpExpiresMinutes: Number(process.env.OTP_EXPIRES_MINUTES || 10),
-  port: Number(process.env.PORT || 5000)
+  emailUser: cleanEnv(process.env.EMAIL_USER),
+  jwtSecret: cleanEnv(process.env.JWT_SECRET, "dev-only-change-this-secret"),
+  otpExpiresMinutes: Number(cleanEnv(process.env.OTP_EXPIRES_MINUTES, 10)),
+  port: Number(cleanEnv(process.env.PORT, 5000))
 };
