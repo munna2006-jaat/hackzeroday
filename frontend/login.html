@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | HackZeroDay Labs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div class="cursor-glow" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="HackZeroDay Labs home">
+        <span class="brand-mark">0D</span>
+        <span>HackZeroDay</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="paths.html">Paths</a>
+        <a href="index.html#labs">Labs</a>
+        <a href="index.html#campus">Campus CTF</a>
+        <a href="index.html#pricing">Pricing</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-ghost" href="paths.html">Explore Paths</a>
+        <a class="btn btn-primary" href="login.html">Start Free</a>
+      </div>
+    </header>
+
+    <main class="auth-shell">
+      <section class="auth-panel" aria-labelledby="login-title">
+        <div class="auth-copy">
+          <p class="eyebrow">Student access</p>
+          <h1 id="login-title">Log in and continue your cyber path.</h1>
+          <p>
+            Email OTP, college profile, XP progress, certificates, and weekly CTF
+            access in one focused dashboard.
+          </p>
+
+          <div class="auth-highlights">
+            <span>Guided cyber rooms</span>
+            <span>UPI-ready premium labs</span>
+            <span>College leaderboard</span>
+          </div>
+        </div>
+
+        <form class="login-card" id="loginForm">
+          <div class="form-tabs" role="tablist" aria-label="Auth mode">
+            <button class="active" type="button" data-auth-mode="login">Login</button>
+            <button type="button" data-auth-mode="signup">Sign up</button>
+          </div>
+
+          <label>
+            Email address
+            <input type="email" name="email" placeholder="student@college.edu" required />
+          </label>
+
+          <label>
+            Password
+            <input type="password" name="password" placeholder="Enter password" required />
+          </label>
+
+          <label class="signup-only">
+            College name
+            <input type="text" name="college" placeholder="Your college/university" />
+          </label>
+
+          <label class="signup-only">
+            Learning goal
+            <select name="goal">
+              <option>Web hacking</option>
+              <option>SOC analyst</option>
+              <option>Bug bounty</option>
+              <option>College exam prep</option>
+            </select>
+          </label>
+
+          <div class="form-row">
+            <label class="checkbox-line">
+              <input type="checkbox" checked />
+              Remember me
+            </label>
+            <a href="#">Forgot?</a>
+          </div>
+
+          <button class="btn btn-primary btn-large full-btn" type="submit">Continue</button>
+          <button class="btn btn-dark btn-large full-btn" type="button">Send email OTP</button>
+
+          <p class="form-note" id="authMessage">
+            Demo frontend ready. Real login will activate after backend API integration.
+          </p>
+        </form>
+      </section>
+
+      <aside class="auth-status" aria-label="Student progress preview">
+        <div class="status-card">
+          <p class="eyebrow">Dashboard preview</p>
+          <h2>Welcome back, Cyber Rookie</h2>
+          <div class="progress-ring">
+            <span>68%</span>
+          </div>
+          <p>Cyber Foundations path progress</p>
+        </div>
+
+        <div class="mini-path-list">
+          <div><strong>02</strong><span>Active paths</span></div>
+          <div><strong>1,240</strong><span>Total XP</span></div>
+          <div><strong>#18</strong><span>Campus rank</span></div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

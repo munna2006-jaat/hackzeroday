@@ -13,7 +13,7 @@ Static first-page prototype for HackZeroDay Labs.
 
 - Brand logo mark in SVG/PNG
 - Hero cyber lab screenshot or generated cyber range image
-- Path thumbnails for Cyber Suru Karo, Web Hacking India, SOC Analyst, College Exam Booster
+- Path thumbnails for Cyber Foundations, Web Hacking India, SOC Analyst, College Exam Booster
 - Campus CTF banner image
 - Student profile/avatar placeholders
 - Certificate preview image
