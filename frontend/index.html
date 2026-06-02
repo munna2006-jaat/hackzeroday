@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HackZeroDay Labs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div class="cursor-glow" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="HackZeroDay Labs home">
+        <span class="brand-mark">0D</span>
+        <span>HackZeroDay</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#paths">Paths</a>
+        <a href="#labs">Labs</a>
+        <a href="#campus">Campus CTF</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-btn" type="button" aria-label="Open search">
+          <span class="search-icon"></span>
+        </button>
+        <a class="btn btn-ghost" href="#">Login</a>
+        <a class="btn btn-primary" href="#">Start Free</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-bg" aria-hidden="true">
+          <span class="grid-plane"></span>
+          <span class="scan-line"></span>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">India's hands-on cyber range</p>
+          <h1 id="hero-title">From zero basics to real-world security labs.</h1>
+          <p class="hero-text">
+            Hindi + Hinglish rooms, Indian college paths, browser labs, CTF battles,
+            and job-ready cyber projects in one platform.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-large" href="#paths">Explore Paths</a>
+            <a class="btn btn-dark btn-large" href="#labs">Launch Demo Lab</a>
+          </div>
+
+          <div class="hero-stats" aria-label="Platform highlights">
+            <div>
+              <strong>50+</strong>
+              <span>starter rooms</span>
+            </div>
+            <div>
+              <strong>₹199</strong>
+              <span>student plan</span>
+            </div>
+            <div>
+              <strong>24/7</strong>
+              <span>browser labs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-console" aria-label="HackZeroDay terminal preview">
+          <div class="console-top">
+            <span></span>
+            <span></span>
+            <span></span>
+            <p>student@hackzeroday:~/web-101</p>
+          </div>
+          <div class="console-body">
+            <p><span>$</span> start-room --path web-hacking-india</p>
+            <p class="success">[online] vulnerable-shop.lab deployed</p>
+            <p><span>$</span> nmap -sV target.hzd</p>
+            <div class="ports">
+              <span>22/tcp ssh</span>
+              <span>80/tcp http</span>
+              <span>3306/tcp mysql</span>
+            </div>
+            <p><span>$</span> submit-flag HZD&#123;first_root&#125;</p>
+            <p class="success">+120 XP unlocked: Web Rookie</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ticker" aria-label="Live activity">
+        <div class="ticker-track">
+          <span>AKTU Web Security path unlocked</span>
+          <span>Delhi college CTF starts Friday</span>
+          <span>New SOC alert triage lab live</span>
+          <span>UPI fraud forensics case added</span>
+          <span>Bug bounty report template updated</span>
+        </div>
+      </section>
+
+      <section class="section" id="paths">
+        <div class="section-head">
+          <p class="eyebrow">Learning paths</p>
+          <h2>Indian-style cyber tracks jo students actually complete karenge.</h2>
+        </div>
+
+        <div class="path-grid">
+          <article class="path-card featured">
+            <p class="level">Beginner</p>
+            <h3>Cyber Suru Karo</h3>
+            <p>Linux, networking, web basics, Kali setup, and first CTF room.</p>
+            <div class="path-meta">
+              <span>12 rooms</span>
+              <span>Hindi walkthroughs</span>
+            </div>
+          </article>
+
+          <article class="path-card">
+            <p class="level">Job-ready</p>
+            <h3>Web Hacking India</h3>
+            <p>Burp Suite, OWASP Top 10, auth bugs, IDOR, SSRF, and reporting.</p>
+            <div class="path-meta">
+              <span>18 rooms</span>
+              <span>8 labs</span>
+            </div>
+          </article>
+
+          <article class="path-card">
+            <p class="level">Career</p>
+            <h3>SOC Analyst Starter</h3>
+            <p>Logs, SIEM basics, phishing triage, Windows events, and IR drills.</p>
+            <div class="path-meta">
+              <span>15 rooms</span>
+              <span>Case files</span>
+            </div>
+          </article>
+
+          <article class="path-card">
+            <p class="level">Campus</p>
+            <h3>College Exam Booster</h3>
+            <p>Crypto, network security, cyber law, viva questions, and quizzes.</p>
+            <div class="path-meta">
+              <span>AKTU/VTU</span>
+              <span>Certificates</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="labs-section" id="labs">
+        <div class="lab-panel">
+          <div>
+            <p class="eyebrow">Live lab format</p>
+            <h2>One click, isolated machine, browser terminal.</h2>
+            <p>
+              Har room mein task cards, hints, flags, reset button, walkthrough unlock,
+              and leaderboard XP rahega.
+            </p>
+          </div>
+
+          <div class="lab-screen">
+            <div class="lab-toolbar">
+              <span class="status-dot"></span>
+              <strong>vulnerable-shop</strong>
+              <button type="button">Reset</button>
+            </div>
+            <div class="lab-layout">
+              <div class="tasks">
+                <span class="done">01 Recon</span>
+                <span class="active">02 Find login bug</span>
+                <span>03 Submit user flag</span>
+                <span>04 Root machine</span>
+              </div>
+              <div class="mini-terminal">
+                <p>$ curl http://target/login</p>
+                <p class="muted">HTTP/1.1 200 OK</p>
+                <p>$ sqlmap -u target</p>
+                <p class="success">parameter username appears injectable</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section campus" id="campus">
+        <div class="section-head">
+          <p class="eyebrow">Campus battles</p>
+          <h2>College vs college CTF league, built for Indian students.</h2>
+        </div>
+        <div class="leaderboard">
+          <div class="rank-row first"><span>#1</span><strong>Team RootRiders</strong><em>8,420 XP</em></div>
+          <div class="rank-row"><span>#2</span><strong>NullSec Club</strong><em>7,960 XP</em></div>
+          <div class="rank-row"><span>#3</span><strong>ByteBenders</strong><em>7,130 XP</em></div>
+          <div class="rank-row"><span>#4</span><strong>CyberYodha</strong><em>6,890 XP</em></div>
+        </div>
+      </section>
+
+      <section class="pricing" id="pricing">
+        <div>
+          <p class="eyebrow">Student-first pricing</p>
+          <h2>Free rooms se start, premium labs UPI se unlock.</h2>
+        </div>
+        <a class="btn btn-primary btn-large" href="#">Join Waitlist</a>
+      </section>
+    </main>
+
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
