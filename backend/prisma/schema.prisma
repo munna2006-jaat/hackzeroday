@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  ADMIN
+}
+
+enum OtpPurpose {
+  EMAIL_VERIFY
+  LOGIN
+  PASSWORD_RESET
+}
+
+model User {
+  id             String     @id @default(cuid())
+  name           String?
+  email          String     @unique
+  passwordHash   String
+  emailVerified  Boolean    @default(false)
+  role           UserRole   @default(STUDENT)
+  college        String?
+  learningGoal   String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  otps           EmailOtp[]
+}
+
+model EmailOtp {
+  id        String     @id @default(cuid())
+  userId    String
+  email     String
+  otpHash   String
+  purpose   OtpPurpose @default(EMAIL_VERIFY)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime   @default(now())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email, purpose])
+  @@index([userId, purpose])
+}

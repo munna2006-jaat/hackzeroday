@@ -67,6 +67,11 @@
           </label>
 
           <label class="signup-only">
+            Full name
+            <input type="text" name="name" placeholder="Your name" />
+          </label>
+
+          <label class="signup-only">
             College name
             <input type="text" name="college" placeholder="Your college/university" />
           </label>
@@ -91,6 +96,14 @@
 
           <button class="btn btn-primary btn-large full-btn" type="submit">Continue</button>
           <button class="btn btn-dark btn-large full-btn" type="button">Send email OTP</button>
+
+          <div class="otp-row">
+            <label>
+              Email OTP
+              <input type="text" name="otp" inputmode="numeric" maxlength="6" placeholder="6-digit code" />
+            </label>
+            <button class="btn btn-ghost" type="button">Verify</button>
+          </div>
 
           <p class="form-note" id="authMessage">
             Demo frontend ready. Real login will activate after backend API integration.
