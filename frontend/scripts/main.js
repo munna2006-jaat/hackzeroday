@@ -1,3 +1,21 @@
+// Auth Check on load
+const currentToken = localStorage.getItem("hzd_token");
+if (currentToken) {
+  if (window.location.pathname.endsWith("login.html")) {
+    window.location.href = "/dashboard.html";
+  }
+  
+  // Update login links to point to dashboard
+  document.querySelectorAll('a[href="login.html"]').forEach(btn => {
+    btn.href = "/dashboard.html";
+    if (btn.classList.contains("btn-ghost") || btn.textContent.trim() === "Login") {
+      btn.textContent = "Dashboard";
+    } else if (btn.classList.contains("btn-primary")) {
+      btn.textContent = "Go to Dashboard";
+    }
+  });
+}
+
 const glow = document.querySelector(".cursor-glow");
 const tickerTrack = document.querySelector(".ticker-track");
 const authTabs = document.querySelectorAll("[data-auth-mode]");
@@ -74,6 +92,14 @@ if (loginForm && authMessage) {
       setAuthMessage("Connecting securely...");
       const data = await requestAuth(mode, payload);
       setAuthMessage(data.message, "success");
+      
+      // If user is already verified, redirect immediately
+      if (data.user && data.user.emailVerified) {
+        setAuthMessage("Login successful! Redirecting...", "success");
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";
+        }, 1200);
+      }
     } catch (error) {
       setAuthMessage(error.message, "error");
     }
@@ -104,7 +130,10 @@ if (loginForm && authMessage) {
         otp: form.get("otp"),
         purpose: "EMAIL_VERIFY"
       });
-      setAuthMessage(data.message, "success");
+      setAuthMessage("Email verified! Loading your dashboard...", "success");
+      setTimeout(() => {
+        window.location.href = "/dashboard.html";
+      }, 1200);
     } catch (error) {
       setAuthMessage(error.message, "error");
     }

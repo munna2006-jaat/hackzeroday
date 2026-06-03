@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | HackZeroDay Labs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="HackZeroDay Labs home">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>HackZeroDay</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="index.html#labs">Labs</a>
+        <a href="index.html#campus">Campus CTF</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-ghost" id="logoutBtn" href="#">Log Out</a>
+      </div>
+    </header>
+
+    <main class="dashboard-container">
+      <!-- 1. Profile Banner -->
+      <section class="profile-banner" aria-label="User Profile Summary">
+        <div class="profile-info">
+          <div class="avatar-wrapper">
+            <span class="avatar-icon">⚡</span>
+          </div>
+          <div class="profile-details">
+            <h2 id="profileName">Loading User...</h2>
+            <p>
+              <span id="profileRole">Student</span>
+              <span id="profileGoal">Goal: Loading...</span>
+              <span id="profileCollege">College: Loading...</span>
+              <span id="profileStatus">Loading...</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="stats-group">
+          <div class="stat-box">
+            <div class="stat-val">3</div>
+            <div class="stat-label">Rooms Done</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">#451</div>
+            <div class="stat-label">Rank</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">320</div>
+            <div class="stat-label">EXP Points</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Section Navigation Tabs -->
+      <nav class="dashboard-tabs" aria-label="Dashboard views">
+        <button class="tab-btn active" data-target="corePathSection" id="tabCoreBtn">
+          Core Roadmap
+        </button>
+        <button class="tab-btn" data-target="specializedPathsSection" id="tabSpecializedBtn">
+          Specialized Tracks
+        </button>
+      </nav>
+
+      <!-- 3. Tree 1: Linear Core Cybersecurity Roadmap -->
+      <section class="roadmap-section active" id="corePathSection">
+        <div class="roadmap-intro">
+          <h3>Cyber Security Learning Roadmap</h3>
+          <p>
+            From fundamental principles to advanced techniques. This linear roadmap provides clear,
+            step-by-step tracks to help you build a solid security skill set.
+          </p>
+        </div>
+
+        <div class="linear-tree-container">
+          <!-- Connecting Line SVG -->
+          <svg class="tree-connector-svg">
+            <line class="connector-line completed" x1="2" y1="0" x2="2" y2="100%" />
+          </svg>
+
+          <!-- Node 1 -->
+          <div class="linear-node">
+            <a class="roadmap-card accent-green" href="#" data-progress="100">
+              <div class="card-icon-box">💻</div>
+              <div class="card-body">
+                <h5>Computer Science Basics</h5>
+                <span class="card-tag">Fundamental</span>
+              </div>
+              <div class="progress-circle-box">
+                <svg>
+                  <circle class="bg-circle" cx="16" cy="16" r="14" />
+                  <circle class="val-circle" cx="16" cy="16" r="14" />
+                </svg>
+                <span>100%</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Node 2 -->
+          <div class="linear-node">
+            <a class="roadmap-card accent-green" href="#" data-progress="96">
+              <div class="card-icon-box">🛡️</div>
+              <div class="card-body">
+                <h5>Pre Security Fundamentals</h5>
+                <span class="card-tag">Pre Security • Path</span>
+              </div>
+              <div class="progress-circle-box">
+                <svg>
+                  <circle class="bg-circle" cx="16" cy="16" r="14" />
+                  <circle class="val-circle" cx="16" cy="16" r="14" />
+                </svg>
+                <span>96%</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Node 3 -->
+          <div class="linear-node">
+            <a class="roadmap-card accent-blue" href="#" data-progress="100">
+              <div class="card-icon-box">🏆</div>
+              <div class="card-body">
+                <h5>Pre Security (SEC0)</h5>
+                <span class="card-tag">Professional Cert</span>
+              </div>
+              <div class="progress-circle-box">
+                <svg>
+                  <circle class="bg-circle" cx="16" cy="16" r="14" />
+                  <circle class="val-circle" cx="16" cy="16" r="14" />
+                </svg>
+                <span>100%</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Node 4 -->
+          <div class="linear-node">
+            <a class="roadmap-card accent-blue" href="#" data-progress="70">
+              <div class="card-icon-box">🧬</div>
+              <div class="card-body">
+                <h5>Cyber Security Foundations</h5>
+                <span class="card-tag">Intermediate • Path</span>
+              </div>
+              <div class="progress-circle-box">
+                <svg>
+                  <circle class="bg-circle" cx="16" cy="16" r="14" />
+                  <circle class="val-circle" cx="16" cy="16" r="14" />
+                </svg>
+                <span>70%</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Node 5 -->
+          <div class="linear-node">
+            <a class="roadmap-card accent-purple" href="#" data-progress="42">
+              <div class="card-icon-box">☣️</div>
+              <div class="card-body">
+                <h5>Cyber Security 101</h5>
+                <span class="card-tag">Advanced • Path</span>
+              </div>
+              <div class="progress-circle-box">
+                <svg>
+                  <circle class="bg-circle" cx="16" cy="16" r="14" />
+                  <circle class="val-circle" cx="16" cy="16" r="14" />
+                </svg>
+                <span>42%</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Tree 2: Grid Layout for Specialized Roadmaps -->
+      <section class="roadmap-section" id="specializedPathsSection">
+        <div class="roadmap-intro">
+          <h3>Specialized Learning Tracks</h3>
+          <p>
+            Dive deep into specialized branches of offensive security, active system defense, 
+            infrastructure engineering, or emerging AI vulnerabilities.
+          </p>
+        </div>
+
+        <div class="tracks-grid">
+          <!-- Column 1: Security Analyst -->
+          <div class="track-column">
+            <div class="track-header">
+              <h4>Security Analyst</h4>
+              <p>Active monitoring and incident response</p>
+            </div>
+            
+            <svg class="column-connector-svg">
+              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
+            </svg>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-green" href="#" data-progress="5">
+                <div class="card-icon-box">🔍</div>
+                <div class="card-body">
+                  <h5>SOC Analyst Level 1</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>5%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-green" href="#" data-progress="0">
+                <div class="card-icon-box">🛡️</div>
+                <div class="card-body">
+                  <h5>Security Analyst L1</h5>
+                  <span class="card-tag">SAL1 • Professional</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-blue" href="#" data-progress="0">
+                <div class="card-icon-box">🔎</div>
+                <div class="card-body">
+                  <h5>SOC Analyst Level 2</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-blue" href="#" data-progress="0">
+                <div class="card-icon-box">🎛️</div>
+                <div class="card-body">
+                  <h5>Security Analyst L2</h5>
+                  <span class="card-tag">SAL2 • Professional</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-purple" href="#" data-progress="0">
+                <div class="card-icon-box">🧠</div>
+                <div class="card-body">
+                  <h5>Endpoint Investigations</h5>
+                  <span class="card-tag">Advanced • Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Column 2: Penetration Tester -->
+          <div class="track-column">
+            <div class="track-header">
+              <h4>Penetration Tester</h4>
+              <p>Offensive checks and system exploitation</p>
+            </div>
+
+            <svg class="column-connector-svg">
+              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
+            </svg>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-green" href="#" data-progress="6">
+                <div class="card-icon-box">💀</div>
+                <div class="card-body">
+                  <h5>Jr Penetration Tester</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>6%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-green" href="#" data-progress="0">
+                <div class="card-icon-box">🥋</div>
+                <div class="card-body">
+                  <h5>Jr Pen Tester Cert</h5>
+                  <span class="card-tag">PT1 • Professional</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-blue" href="#" data-progress="1">
+                <div class="card-icon-box">🕸️</div>
+                <div class="card-body">
+                  <h5>Web App Pentesting</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>1%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-blue" href="#" data-progress="1">
+                <div class="card-icon-box">🕷️</div>
+                <div class="card-body">
+                  <h5>Web App Red Teaming</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>1%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-purple" href="#" data-progress="0">
+                <div class="card-icon-box">🗡️</div>
+                <div class="card-body">
+                  <h5>Red Teaming Operations</h5>
+                  <span class="card-tag">Advanced • Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Column 3: Security Engineer -->
+          <div class="track-column">
+            <div class="track-header">
+              <h4>Security Engineer</h4>
+              <p>Secure system design and architecture</p>
+            </div>
+
+            <svg class="column-connector-svg">
+              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
+            </svg>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-blue" href="#" data-progress="0">
+                <div class="card-icon-box">⚙️</div>
+                <div class="card-body">
+                  <h5>Security Engineering</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-blue" href="#" data-progress="0">
+                <div class="card-icon-box">♾️</div>
+                <div class="card-body">
+                  <h5>DevSecOps Specialist</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-purple" href="#" data-progress="0">
+                <div class="card-icon-box">☁️</div>
+                <div class="card-body">
+                  <h5>AWS/Azure Defense</h5>
+                  <span class="card-tag">Path • Add-on</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Column 4: AI & Emerging Tech -->
+          <div class="track-column">
+            <div class="track-header">
+              <h4>AI & Emerging Tech</h4>
+              <p>LLM guardrails and automation hacking</p>
+            </div>
+
+            <svg class="column-connector-svg">
+              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
+            </svg>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-purple" href="#" data-progress="8">
+                <div class="card-icon-box">🤖</div>
+                <div class="card-body">
+                  <h5>AI & LLM Security</h5>
+                  <span class="card-tag">Path</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>8%</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="track-node">
+              <a class="roadmap-card accent-purple" href="#" data-progress="0">
+                <div class="card-icon-box">🧠</div>
+                <div class="card-body">
+                  <h5>AI Security (AI1)</h5>
+                  <span class="card-tag">Professional Cert</span>
+                </div>
+                <div class="progress-circle-box">
+                  <svg>
+                    <circle class="bg-circle" cx="16" cy="16" r="14" />
+                    <circle class="val-circle" cx="16" cy="16" r="14" />
+                  </svg>
+                  <span>0%</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 5. Floating Laser Robot Mascot -->
+    <div class="robot-mascot-container" aria-hidden="true">
+      <div class="robot-mascot">
+        <!-- Floating Robot Face and Antenna SVG -->
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Head Base -->
+          <rect x="20" y="30" width="60" height="50" rx="15" fill="#1e293b" stroke="#00b0ff" stroke-width="4" />
+          <!-- Neck -->
+          <rect x="42" y="80" width="16" height="10" fill="#0f172a" stroke="#00b0ff" stroke-width="2" />
+          <!-- Antenna -->
+          <line x1="50" y1="30" x2="50" y2="10" stroke="#00b0ff" stroke-width="4" />
+          <circle cx="50" cy="10" r="6" fill="#00e676" />
+          <!-- Glowing Eyes -->
+          <circle cx="38" cy="55" r="8" fill="#00b0ff" />
+          <circle cx="62" cy="55" r="8" fill="#00b0ff" />
+          <!-- Eye Pupils (lasers glowing) -->
+          <circle cx="38" cy="55" r="3" fill="#ffffff" />
+          <circle cx="62" cy="55" r="3" fill="#ffffff" />
+          <!-- Digital Smile -->
+          <path d="M 40 70 Q 50 75 60 70" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round" />
+        </svg>
+        <div class="robot-laser-beam"></div>
+      </div>
+    </div>
+
+    <script src="scripts/dashboard.js"></script>
+  </body>
+</html>
