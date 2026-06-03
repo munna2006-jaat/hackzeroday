@@ -4,527 +4,390 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard | HackZeroDay Labs</title>
+    <meta name="description" content="Track your cybersecurity learning progress with HackZeroDay Labs dashboard. Explore learning paths, rooms, and certifications." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/dashboard.css" />
   </head>
   <body class="dashboard-body">
-    <div class="cursor-glow" aria-hidden="true"></div>
 
-    <header class="site-header">
-      <a class="brand" href="index.html" aria-label="HackZeroDay Labs home">
-        <img class="brand-mark" src="assets/logo.svg" alt="" />
-        <span>HackZeroDay</span>
-      </a>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="index.html" class="sidebar-logo">
+          <img src="assets/logo.svg" alt="" class="sidebar-logo-img" />
+          <span>HackZeroDay</span>
+        </a>
+      </div>
 
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="dashboard.html" class="active">Dashboard</a>
-        <a href="index.html#labs">Labs</a>
-        <a href="index.html#campus">Campus CTF</a>
+      <nav class="sidebar-nav" aria-label="Dashboard navigation">
+        <div class="nav-section-label">LEARN</div>
+        <a href="dashboard.html" class="sidebar-link active" id="navLearningPaths">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Learning Paths</span>
+        </a>
+        <a href="#" class="sidebar-link" id="navRooms">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M3 9h6"/></svg>
+          <span>Rooms</span>
+        </a>
+        <a href="#" class="sidebar-link" id="navPractice">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span>Practice</span>
+        </a>
+
+        <div class="nav-section-label">COMPETE</div>
+        <a href="#" class="sidebar-link" id="navCTF">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          <span>Campus CTF</span>
+        </a>
+        <a href="#" class="sidebar-link" id="navLeaderboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          <span>Leaderboard</span>
+        </a>
+
+        <div class="nav-section-label">ACCOUNT</div>
+        <a href="#" class="sidebar-link" id="navProfile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>My Profile</span>
+        </a>
+        <a href="#" class="sidebar-link" id="navSettings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </a>
       </nav>
 
-      <div class="nav-actions">
-        <a class="btn btn-ghost" id="logoutBtn" href="#">Log Out</a>
-      </div>
-    </header>
-
-    <main class="dashboard-container">
-      <!-- 1. Profile Banner -->
-      <section class="profile-banner" aria-label="User Profile Summary">
-        <div class="profile-info">
-          <div class="avatar-wrapper">
-            <span class="avatar-icon">⚡</span>
-          </div>
-          <div class="profile-details">
-            <h2 id="profileName">Loading User...</h2>
-            <p>
-              <span id="profileRole">Student</span>
-              <span id="profileGoal">Goal: Loading...</span>
-              <span id="profileCollege">College: Loading...</span>
-              <span id="profileStatus">Loading...</span>
-            </p>
-          </div>
-        </div>
-
-        <div class="stats-group">
-          <div class="stat-box">
-            <div class="stat-val">3</div>
-            <div class="stat-label">Rooms Done</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val">#451</div>
-            <div class="stat-label">Rank</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val">320</div>
-            <div class="stat-label">EXP Points</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. Section Navigation Tabs -->
-      <nav class="dashboard-tabs" aria-label="Dashboard views">
-        <button class="tab-btn active" data-target="corePathSection" id="tabCoreBtn">
-          Core Roadmap
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Log Out</span>
         </button>
-        <button class="tab-btn" data-target="specializedPathsSection" id="tabSpecializedBtn">
-          Specialized Tracks
-        </button>
-      </nav>
-
-      <!-- 3. Tree 1: Linear Core Cybersecurity Roadmap -->
-      <section class="roadmap-section active" id="corePathSection">
-        <div class="roadmap-intro">
-          <h3>Cyber Security Learning Roadmap</h3>
-          <p>
-            From fundamental principles to advanced techniques. This linear roadmap provides clear,
-            step-by-step tracks to help you build a solid security skill set.
-          </p>
-        </div>
-
-        <div class="linear-tree-container">
-          <!-- Connecting Line SVG -->
-          <svg class="tree-connector-svg">
-            <line class="connector-line completed" x1="2" y1="0" x2="2" y2="100%" />
-          </svg>
-
-          <!-- Node 1 -->
-          <div class="linear-node">
-            <a class="roadmap-card accent-green" href="#" data-progress="100">
-              <div class="card-icon-box">💻</div>
-              <div class="card-body">
-                <h5>Computer Science Basics</h5>
-                <span class="card-tag">Fundamental</span>
-              </div>
-              <div class="progress-circle-box">
-                <svg>
-                  <circle class="bg-circle" cx="16" cy="16" r="14" />
-                  <circle class="val-circle" cx="16" cy="16" r="14" />
-                </svg>
-                <span>100%</span>
-              </div>
-            </a>
-          </div>
-
-          <!-- Node 2 -->
-          <div class="linear-node">
-            <a class="roadmap-card accent-green" href="#" data-progress="96">
-              <div class="card-icon-box">🛡️</div>
-              <div class="card-body">
-                <h5>Pre Security Fundamentals</h5>
-                <span class="card-tag">Pre Security • Path</span>
-              </div>
-              <div class="progress-circle-box">
-                <svg>
-                  <circle class="bg-circle" cx="16" cy="16" r="14" />
-                  <circle class="val-circle" cx="16" cy="16" r="14" />
-                </svg>
-                <span>96%</span>
-              </div>
-            </a>
-          </div>
-
-          <!-- Node 3 -->
-          <div class="linear-node">
-            <a class="roadmap-card accent-blue" href="#" data-progress="100">
-              <div class="card-icon-box">🏆</div>
-              <div class="card-body">
-                <h5>Pre Security (SEC0)</h5>
-                <span class="card-tag">Professional Cert</span>
-              </div>
-              <div class="progress-circle-box">
-                <svg>
-                  <circle class="bg-circle" cx="16" cy="16" r="14" />
-                  <circle class="val-circle" cx="16" cy="16" r="14" />
-                </svg>
-                <span>100%</span>
-              </div>
-            </a>
-          </div>
-
-          <!-- Node 4 -->
-          <div class="linear-node">
-            <a class="roadmap-card accent-blue" href="#" data-progress="70">
-              <div class="card-icon-box">🧬</div>
-              <div class="card-body">
-                <h5>Cyber Security Foundations</h5>
-                <span class="card-tag">Intermediate • Path</span>
-              </div>
-              <div class="progress-circle-box">
-                <svg>
-                  <circle class="bg-circle" cx="16" cy="16" r="14" />
-                  <circle class="val-circle" cx="16" cy="16" r="14" />
-                </svg>
-                <span>70%</span>
-              </div>
-            </a>
-          </div>
-
-          <!-- Node 5 -->
-          <div class="linear-node">
-            <a class="roadmap-card accent-purple" href="#" data-progress="42">
-              <div class="card-icon-box">☣️</div>
-              <div class="card-body">
-                <h5>Cyber Security 101</h5>
-                <span class="card-tag">Advanced • Path</span>
-              </div>
-              <div class="progress-circle-box">
-                <svg>
-                  <circle class="bg-circle" cx="16" cy="16" r="14" />
-                  <circle class="val-circle" cx="16" cy="16" r="14" />
-                </svg>
-                <span>42%</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. Tree 2: Grid Layout for Specialized Roadmaps -->
-      <section class="roadmap-section" id="specializedPathsSection">
-        <div class="roadmap-intro">
-          <h3>Specialized Learning Tracks</h3>
-          <p>
-            Dive deep into specialized branches of offensive security, active system defense, 
-            infrastructure engineering, or emerging AI vulnerabilities.
-          </p>
-        </div>
-
-        <div class="tracks-grid">
-          <!-- Column 1: Security Analyst -->
-          <div class="track-column">
-            <div class="track-header">
-              <h4>Security Analyst</h4>
-              <p>Active monitoring and incident response</p>
-            </div>
-            
-            <svg class="column-connector-svg">
-              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
-            </svg>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-green" href="#" data-progress="5">
-                <div class="card-icon-box">🔍</div>
-                <div class="card-body">
-                  <h5>SOC Analyst Level 1</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>5%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-green" href="#" data-progress="0">
-                <div class="card-icon-box">🛡️</div>
-                <div class="card-body">
-                  <h5>Security Analyst L1</h5>
-                  <span class="card-tag">SAL1 • Professional</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-blue" href="#" data-progress="0">
-                <div class="card-icon-box">🔎</div>
-                <div class="card-body">
-                  <h5>SOC Analyst Level 2</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-blue" href="#" data-progress="0">
-                <div class="card-icon-box">🎛️</div>
-                <div class="card-body">
-                  <h5>Security Analyst L2</h5>
-                  <span class="card-tag">SAL2 • Professional</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-purple" href="#" data-progress="0">
-                <div class="card-icon-box">🧠</div>
-                <div class="card-body">
-                  <h5>Endpoint Investigations</h5>
-                  <span class="card-tag">Advanced • Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-          </div>
-
-          <!-- Column 2: Penetration Tester -->
-          <div class="track-column">
-            <div class="track-header">
-              <h4>Penetration Tester</h4>
-              <p>Offensive checks and system exploitation</p>
-            </div>
-
-            <svg class="column-connector-svg">
-              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
-            </svg>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-green" href="#" data-progress="6">
-                <div class="card-icon-box">💀</div>
-                <div class="card-body">
-                  <h5>Jr Penetration Tester</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>6%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-green" href="#" data-progress="0">
-                <div class="card-icon-box">🥋</div>
-                <div class="card-body">
-                  <h5>Jr Pen Tester Cert</h5>
-                  <span class="card-tag">PT1 • Professional</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-blue" href="#" data-progress="1">
-                <div class="card-icon-box">🕸️</div>
-                <div class="card-body">
-                  <h5>Web App Pentesting</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>1%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-blue" href="#" data-progress="1">
-                <div class="card-icon-box">🕷️</div>
-                <div class="card-body">
-                  <h5>Web App Red Teaming</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>1%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-purple" href="#" data-progress="0">
-                <div class="card-icon-box">🗡️</div>
-                <div class="card-body">
-                  <h5>Red Teaming Operations</h5>
-                  <span class="card-tag">Advanced • Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-          </div>
-
-          <!-- Column 3: Security Engineer -->
-          <div class="track-column">
-            <div class="track-header">
-              <h4>Security Engineer</h4>
-              <p>Secure system design and architecture</p>
-            </div>
-
-            <svg class="column-connector-svg">
-              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
-            </svg>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-blue" href="#" data-progress="0">
-                <div class="card-icon-box">⚙️</div>
-                <div class="card-body">
-                  <h5>Security Engineering</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-blue" href="#" data-progress="0">
-                <div class="card-icon-box">♾️</div>
-                <div class="card-body">
-                  <h5>DevSecOps Specialist</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-purple" href="#" data-progress="0">
-                <div class="card-icon-box">☁️</div>
-                <div class="card-body">
-                  <h5>AWS/Azure Defense</h5>
-                  <span class="card-tag">Path • Add-on</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-          </div>
-
-          <!-- Column 4: AI & Emerging Tech -->
-          <div class="track-column">
-            <div class="track-header">
-              <h4>AI & Emerging Tech</h4>
-              <p>LLM guardrails and automation hacking</p>
-            </div>
-
-            <svg class="column-connector-svg">
-              <line class="connector-line completed" x1="1" y1="0" x2="1" y2="100%" />
-            </svg>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-purple" href="#" data-progress="8">
-                <div class="card-icon-box">🤖</div>
-                <div class="card-body">
-                  <h5>AI & LLM Security</h5>
-                  <span class="card-tag">Path</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>8%</span>
-                </div>
-              </a>
-            </div>
-
-            <div class="track-node">
-              <a class="roadmap-card accent-purple" href="#" data-progress="0">
-                <div class="card-icon-box">🧠</div>
-                <div class="card-body">
-                  <h5>AI Security (AI1)</h5>
-                  <span class="card-tag">Professional Cert</span>
-                </div>
-                <div class="progress-circle-box">
-                  <svg>
-                    <circle class="bg-circle" cx="16" cy="16" r="14" />
-                    <circle class="val-circle" cx="16" cy="16" r="14" />
-                  </svg>
-                  <span>0%</span>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 5. Floating Laser Robot Mascot -->
-    <div class="robot-mascot-container" aria-hidden="true">
-      <div class="robot-mascot">
-        <!-- Floating Robot Face and Antenna SVG -->
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <!-- Head Base -->
-          <rect x="20" y="30" width="60" height="50" rx="15" fill="#1e293b" stroke="#00b0ff" stroke-width="4" />
-          <!-- Neck -->
-          <rect x="42" y="80" width="16" height="10" fill="#0f172a" stroke="#00b0ff" stroke-width="2" />
-          <!-- Antenna -->
-          <line x1="50" y1="30" x2="50" y2="10" stroke="#00b0ff" stroke-width="4" />
-          <circle cx="50" cy="10" r="6" fill="#00e676" />
-          <!-- Glowing Eyes -->
-          <circle cx="38" cy="55" r="8" fill="#00b0ff" />
-          <circle cx="62" cy="55" r="8" fill="#00b0ff" />
-          <!-- Eye Pupils (lasers glowing) -->
-          <circle cx="38" cy="55" r="3" fill="#ffffff" />
-          <circle cx="62" cy="55" r="3" fill="#ffffff" />
-          <!-- Digital Smile -->
-          <path d="M 40 70 Q 50 75 60 70" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round" />
-        </svg>
-        <div class="robot-laser-beam"></div>
       </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dashboard-main">
+      <!-- Top Bar -->
+      <header class="topbar" id="topbar">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-greeting">
+          <h1 id="greetingText">Welcome back</h1>
+          <p id="greetingSubtext">Continue your hacking journey</p>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-stat" id="topbarLevel">
+            <span class="stat-number">0</span>
+            <span class="stat-text">Level</span>
+          </div>
+          <div class="topbar-stat" id="topbarStreak">
+            <span class="stat-number">0</span>
+            <span class="stat-text">Day Streak</span>
+          </div>
+          <div class="topbar-stat" id="topbarRank">
+            <span class="stat-number">—</span>
+            <span class="stat-text">Rank</span>
+          </div>
+          <div class="topbar-avatar" id="topbarAvatar">
+            <span>?</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <main class="content-area" id="contentArea">
+
+        <!-- Section: My Learning Paths -->
+        <section class="content-section" id="sectionPaths">
+          <div class="section-header">
+            <h2>Learning Paths</h2>
+            <p>Structured learning paths to guide your cybersecurity career from beginner to advanced.</p>
+          </div>
+
+          <!-- Tab Filters -->
+          <div class="path-filters" id="pathFilters">
+            <button class="filter-btn active" data-filter="all">All Paths</button>
+            <button class="filter-btn" data-filter="beginner">Beginner</button>
+            <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+            <button class="filter-btn" data-filter="advanced">Advanced</button>
+          </div>
+
+          <!-- Path Cards Grid -->
+          <div class="paths-grid" id="pathsGrid">
+
+            <!-- Path Card 1: Pre Security -->
+            <article class="path-card-lg" data-level="beginner" data-path-id="pre-security" id="pathPreSecurity">
+              <div class="path-card-image">
+                <img src="assets/paths/pre-security.png" alt="Pre Security Path" loading="lazy" />
+                <span class="path-difficulty beginner">Beginner</span>
+              </div>
+              <div class="path-card-content">
+                <h3>Pre Security</h3>
+                <p>Before hacking anything, you first need to learn the basics of networking, how the web works, and the fundamentals of Linux.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    40 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    5 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    18 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollPreSecurity">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 2: Cyber Security 101 -->
+            <article class="path-card-lg" data-level="beginner" data-path-id="cyber-101" id="pathCyber101">
+              <div class="path-card-image">
+                <img src="assets/paths/cyber-101.png" alt="Cyber Security 101 Path" loading="lazy" />
+                <span class="path-difficulty beginner">Beginner</span>
+              </div>
+              <div class="path-card-content">
+                <h3>Cyber Security 101</h3>
+                <p>Learn the essential concepts and fundamentals of cybersecurity. Understanding threats, vulnerabilities, cryptography and OS security.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    64 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    8 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    30 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollCyber101">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 3: SOC Level 1 -->
+            <article class="path-card-lg" data-level="intermediate" data-path-id="soc-analyst" id="pathSOC1">
+              <div class="path-card-image">
+                <img src="assets/paths/soc-analyst.png" alt="SOC Level 1 Path" loading="lazy" />
+                <span class="path-difficulty intermediate">Intermediate</span>
+              </div>
+              <div class="path-card-content">
+                <h3>SOC Level 1</h3>
+                <p>Learn the skills needed for a Security Operations Center analyst. SIEM, log analysis, network traffic analysis, phishing triage and incident response.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    56 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    7 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    25 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollSOC1">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 4: Jr Penetration Tester -->
+            <article class="path-card-lg" data-level="intermediate" data-path-id="pentesting" id="pathPentest">
+              <div class="path-card-image">
+                <img src="assets/paths/pentesting.png" alt="Jr Penetration Tester Path" loading="lazy" />
+                <span class="path-difficulty intermediate">Intermediate</span>
+              </div>
+              <div class="path-card-content">
+                <h3>Jr Penetration Tester</h3>
+                <p>Build the foundational skills needed for penetration testing. Reconnaissance, scanning, exploitation, and privilege escalation techniques.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    56 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    8 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    22 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollPentest">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 5: Web Application Pentesting -->
+            <article class="path-card-lg" data-level="intermediate" data-path-id="web-hacking" id="pathWebHacking">
+              <div class="path-card-image">
+                <img src="assets/paths/web-hacking.png" alt="Web Application Pentesting Path" loading="lazy" />
+                <span class="path-difficulty intermediate">Intermediate</span>
+              </div>
+              <div class="path-card-content">
+                <h3>Web Application Pentesting</h3>
+                <p>Master web application security. OWASP Top 10, Burp Suite, SQL injection, XSS, SSRF, file upload, and writing vulnerability reports.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    48 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    6 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    20 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollWebHacking">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 6: Red Teaming -->
+            <article class="path-card-lg" data-level="advanced" data-path-id="red-team" id="pathRedTeam">
+              <div class="path-card-image">
+                <img src="assets/paths/red-team.png" alt="Red Teaming Path" loading="lazy" />
+                <span class="path-difficulty advanced">Advanced</span>
+              </div>
+              <div class="path-card-content">
+                <h3>Red Team Operations</h3>
+                <p>Advanced offensive security techniques. Active Directory attacks, lateral movement, persistence, C2 frameworks, and adversary simulation.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    72 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    9 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    28 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollRedTeam">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 7: Security Engineer -->
+            <article class="path-card-lg" data-level="advanced" data-path-id="security-engineer" id="pathSecEngineer">
+              <div class="path-card-image">
+                <img src="assets/paths/security-engineer.png" alt="Security Engineer Path" loading="lazy" />
+                <span class="path-difficulty advanced">Advanced</span>
+              </div>
+              <div class="path-card-content">
+                <h3>Security Engineer</h3>
+                <p>Design and build secure systems. Network security architecture, hardening, IDS/IPS, firewall configuration, and cloud security fundamentals.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    60 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    7 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    24 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollSecEngineer">Start Path</a>
+              </div>
+            </article>
+
+            <!-- Path Card 8: DevSecOps -->
+            <article class="path-card-lg" data-level="advanced" data-path-id="devsecops" id="pathDevSecOps">
+              <div class="path-card-image">
+                <img src="assets/paths/devops.png" alt="DevSecOps Path" loading="lazy" />
+                <span class="path-difficulty advanced">Advanced</span>
+              </div>
+              <div class="path-card-content">
+                <h3>DevSecOps</h3>
+                <p>Integrate security into the development pipeline. CI/CD security, container security, SAST/DAST, infrastructure as code, and cloud-native security.</p>
+                <div class="path-meta-row">
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    52 Hours
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                    6 Modules
+                  </span>
+                  <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    20 Rooms
+                  </span>
+                </div>
+                <div class="path-progress-bar">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <span class="progress-text">0% Complete</span>
+                </div>
+                <a href="#" class="path-enroll-btn" id="enrollDevSecOps">Start Path</a>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+      </main>
     </div>
 
     <script src="scripts/dashboard.js"></script>

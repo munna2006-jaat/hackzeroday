@@ -1,28 +1,34 @@
-/* dashboard.js - Dynamic Profile Management and Animations */
+/* ===================================================================
+   dashboard.js - HackZeroDay Dashboard Controller
+   Handles auth, profile rendering, filtering, and sidebar toggle
+   =================================================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("hzd_token");
-  
-  // 1. Guard check: redirect to login if no token is found
+
+  // 1. Auth guard - redirect if not logged in
   if (!token) {
     window.location.href = "/login.html";
     return;
   }
 
-  // DOM Elements
-  const profileName = document.querySelector("#profileName");
-  const profileGoal = document.querySelector("#profileGoal");
-  const profileCollege = document.querySelector("#profileCollege");
-  const profileStatus = document.querySelector("#profileStatus");
-  const logoutBtn = document.querySelector("#logoutBtn");
-  
-  // 2. Fetch User profile info
+  // ---- DOM References ----
+  const greetingText = document.getElementById("greetingText");
+  const greetingSubtext = document.getElementById("greetingSubtext");
+  const topbarAvatar = document.getElementById("topbarAvatar");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  const sidebar = document.getElementById("sidebar");
+  const pathFilters = document.getElementById("pathFilters");
+  const pathsGrid = document.getElementById("pathsGrid");
+
+  // 2. Fetch user profile
   try {
     const response = await fetch("/api/auth/me", {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (!response.ok) {
@@ -32,71 +38,88 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await response.json();
     const user = data.user;
 
-    // Render profile details
-    if (profileName) profileName.textContent = user.name || "Hacker Student";
-    if (profileGoal) profileGoal.textContent = `Goal: ${user.learningGoal || "Not specified"}`;
-    if (profileCollege) profileCollege.textContent = user.college || "Self Learner";
-    
-    if (profileStatus) {
-      if (user.emailVerified) {
-        profileStatus.textContent = "Verified Student";
-        profileStatus.classList.add("status-badge");
-      } else {
-        profileStatus.textContent = "Unverified (Verify Email)";
-        profileStatus.style.color = "#ff9100";
-        profileStatus.style.borderColor = "rgba(255, 145, 0, 0.3)";
-        profileStatus.style.backgroundColor = "rgba(255, 145, 0, 0.05)";
-      }
+    // Render greeting
+    const firstName = (user.name || "Hacker").split(" ")[0];
+    if (greetingText) {
+      greetingText.textContent = `Welcome back, ${firstName}`;
+    }
+    if (greetingSubtext) {
+      greetingSubtext.textContent = "Continue your hacking journey";
+    }
+
+    // Avatar initial
+    if (topbarAvatar) {
+      topbarAvatar.textContent = firstName.charAt(0).toUpperCase();
     }
   } catch (error) {
-    console.error("[dashboard] Auth session verification failed:", error);
+    console.error("[dashboard] Auth verification failed:", error);
     localStorage.removeItem("hzd_token");
     window.location.href = "/login.html";
     return;
   }
 
-  // 3. Tab Navigation Logic
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const sections = document.querySelectorAll(".roadmap-section");
+  // 3. Path Filter Logic
+  if (pathFilters && pathsGrid) {
+    const filterBtns = pathFilters.querySelectorAll(".filter-btn");
+    const pathCards = pathsGrid.querySelectorAll(".path-card-lg");
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      // Remove active states
-      tabButtons.forEach(b => b.classList.remove("active"));
-      sections.forEach(s => s.classList.remove("active"));
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        // Update active state
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
 
-      // Add active state to clicked tab
-      btn.classList.add("active");
-      const targetSection = document.getElementById(btn.dataset.target);
-      if (targetSection) {
-        targetSection.classList.add("active");
-      }
+        const filter = btn.dataset.filter;
+
+        pathCards.forEach((card) => {
+          if (filter === "all" || card.dataset.level === filter) {
+            card.classList.remove("hidden");
+          } else {
+            card.classList.add("hidden");
+          }
+        });
+      });
     });
-  });
+  }
 
-  // 4. Animate Circular Progress Circles on Cards
-  function animateProgressCircles() {
-    document.querySelectorAll(".roadmap-card").forEach(card => {
-      const progress = parseInt(card.dataset.progress || "0", 10);
-      const circle = card.querySelector(".val-circle");
-      
-      if (circle) {
-        const radius = 14;
-        const circumference = 2 * Math.PI * radius; // 87.96 -> 88
-        
-        // Initial setup (hidden offset)
-        circle.style.strokeDashoffset = circumference;
-        
-        // Animate to actual value
-        setTimeout(() => {
-          const offset = circumference - (progress / 100) * circumference;
-          circle.style.strokeDashoffset = offset;
-        }, 150);
+  // 4. Mobile Sidebar Toggle
+  let overlay = document.querySelector(".sidebar-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "sidebar-overlay";
+    document.body.appendChild(overlay);
+  }
+
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add("open");
+    overlay.classList.add("visible");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove("open");
+    overlay.classList.remove("visible");
+    document.body.style.overflow = "";
+  }
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener("click", () => {
+      if (sidebar && sidebar.classList.contains("open")) {
+        closeSidebar();
+      } else {
+        openSidebar();
       }
     });
   }
 
-  animateProgressCircles();
+  overlay.addEventListener("click", closeSidebar);
+
+  // Close sidebar on window resize to desktop
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1024) {
+      closeSidebar();
+    }
+  });
 
   // 5. Handle Logout
   if (logoutBtn) {
@@ -107,12 +130,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // 6. Interactive Cursor Glow
-  const glow = document.querySelector(".cursor-glow");
-  if (glow) {
-    window.addEventListener("pointermove", (event) => {
-      glow.style.left = `${event.clientX}px`;
-      glow.style.top = `${event.clientY}px`;
-    });
+  // 6. Animate progress bars on scroll (IntersectionObserver)
+  const progressBars = document.querySelectorAll(".progress-fill");
+  if (progressBars.length > 0 && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Progress is set via inline style width; the CSS transition handles animation
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    progressBars.forEach((bar) => observer.observe(bar));
   }
 });

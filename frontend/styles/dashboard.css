@@ -1,618 +1,630 @@
-/* dashboard.css - Premium Hacker Dashboard Stylesheet */
+/* ===================================================================
+   dashboard.css - HackZeroDay Dashboard
+   Clean, classic HTB/THM-inspired layout
+   =================================================================== */
 
+/* ---- CSS Variables ---- */
 :root {
-  --bg-primary: #0b0e14;
-  --bg-secondary: #121824;
-  --bg-tertiary: #1b2336;
-  --accent-green: #00e676;
-  --accent-green-glow: rgba(0, 230, 118, 0.25);
-  --accent-blue: #00b0ff;
-  --accent-blue-glow: rgba(0, 176, 255, 0.25);
-  --accent-purple: #d500f9;
-  --accent-purple-glow: rgba(213, 0, 249, 0.25);
-  --accent-orange: #ff9100;
-  --border-color: #243046;
-  --text-main: #e2e8f0;
-  --text-muted: #8a99ad;
+  --dash-bg: #111927;
+  --dash-surface: #1a2332;
+  --dash-surface-hover: #1f2b3d;
+  --dash-surface-light: #243044;
+  --dash-border: #2a3a50;
+  --dash-border-light: #344560;
+  --dash-text: #e2e8f0;
+  --dash-text-muted: #8899aa;
+  --dash-text-dim: #5a6d7f;
+  --dash-green: #4ade80;
+  --dash-green-dim: rgba(74, 222, 128, 0.15);
+  --dash-blue: #38bdf8;
+  --dash-blue-dim: rgba(56, 189, 248, 0.15);
+  --dash-orange: #fb923c;
+  --dash-orange-dim: rgba(251, 146, 60, 0.15);
+  --dash-red: #f87171;
+  --dash-red-dim: rgba(248, 113, 113, 0.15);
+  --dash-purple: #a78bfa;
+  --sidebar-width: 250px;
+  --topbar-height: 70px;
+  --card-radius: 10px;
 }
 
+/* ---- Dashboard Body ---- */
 body.dashboard-body {
-  background-color: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle at 50% 50%, rgba(20, 30, 50, 0.4) 0%, transparent 80%),
-    linear-gradient(to right, rgba(25, 35, 55, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(25, 35, 55, 0.15) 1px, transparent 1px);
-  background-size: 100% 100%, 24px 24px, 24px 24px;
-  color: var(--text-main);
+  background-color: var(--dash-bg);
+  color: var(--dash-text);
   min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
 }
 
-/* Dashboard Layout */
-.dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px 80px 20px;
-  position: relative;
-  z-index: 2;
-}
-
-/* Profile Banner Section */
-.profile-banner {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(18, 24, 36, 0.8) 100%);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  position: relative;
-  overflow: hidden;
-}
-
-.profile-banner::after {
-  content: '';
-  position: absolute;
+/* ===================================================================
+   SIDEBAR
+   =================================================================== */
+.sidebar {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
-  animation: scan-horizontal 4s linear infinite;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--dash-surface);
+  border-right: 1px solid var(--dash-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.25s ease;
 }
 
-.profile-info {
+.sidebar-brand {
+  padding: 20px 20px 15px;
+  border-bottom: 1px solid var(--dash-border);
+}
+
+.sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 20px;
-}
-
-.avatar-wrapper {
-  position: relative;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: var(--bg-tertiary);
-  border: 2px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-}
-
-.avatar-wrapper::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px solid var(--accent-green);
-  opacity: 0.5;
-  animation: pulse-glow 2s infinite ease-in-out;
-}
-
-.avatar-icon {
-  font-size: 32px;
-  color: var(--accent-green);
-}
-
-.profile-details h2 {
-  font-size: 24px;
-  margin: 0 0 5px 0;
+  gap: 10px;
+  text-decoration: none;
   color: #fff;
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+}
+
+.sidebar-logo-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  padding: 18px 22px 6px;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
+  color: var(--dash-text-dim);
+  text-transform: uppercase;
 }
 
-.profile-details p {
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  color: var(--dash-text-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-link:hover {
+  color: var(--dash-text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-link.active {
+  color: var(--dash-green);
+  background: var(--dash-green-dim);
+  border-left-color: var(--dash-green);
+}
+
+.sidebar-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.sidebar-link.active svg {
+  opacity: 1;
+}
+
+.sidebar-footer {
+  padding: 15px 20px;
+  border-top: 1px solid var(--dash-border);
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: 1px solid var(--dash-border);
+  border-radius: 8px;
+  color: var(--dash-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sidebar-logout-btn:hover {
+  color: var(--dash-red);
+  border-color: rgba(248, 113, 113, 0.3);
+  background: var(--dash-red-dim);
+}
+
+/* ===================================================================
+   MAIN CONTENT AREA
+   =================================================================== */
+.dashboard-main {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===================================================================
+   TOP BAR
+   =================================================================== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--topbar-height);
+  padding: 0 32px;
+  background: rgba(26, 35, 50, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--dash-border);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--dash-text);
+  cursor: pointer;
+  padding: 6px;
+}
+
+.topbar-greeting h1 {
+  font-size: 1.3rem;
+  font-weight: 800;
   margin: 0;
-  font-size: 14px;
-  color: var(--text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.topbar-greeting p {
+  font-size: 0.82rem;
+  color: var(--dash-text-muted);
+  margin: 2px 0 0;
+}
+
+.topbar-right {
   display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
 }
 
-.profile-details span {
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.profile-details .status-badge {
-  color: var(--accent-green);
-  border-color: rgba(0, 230, 118, 0.3);
-  background-color: rgba(0, 230, 118, 0.05);
-}
-
-.stats-group {
+.topbar-stat {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
 }
 
-.stat-box {
-  text-align: right;
-}
-
-.stat-box .stat-val {
-  font-size: 28px;
+.topbar-stat .stat-number {
+  font-size: 1.1rem;
   font-weight: 900;
   color: #fff;
   font-family: 'JetBrains Mono', monospace;
-  margin: 0;
 }
 
-.stat-box .stat-label {
-  font-size: 11px;
+.topbar-stat .stat-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--dash-text-dim);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text-muted);
-  margin: 2px 0 0 0;
+  letter-spacing: 0.8px;
 }
 
-/* Tabs */
-.dashboard-tabs {
+.topbar-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--dash-surface-light);
+  border: 2px solid var(--dash-border-light);
   display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 15px;
-}
-
-.tab-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.tab-btn:hover {
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-.tab-btn.active {
-  color: var(--accent-green);
-  background-color: rgba(0, 230, 118, 0.08);
-  border: 1px solid rgba(0, 230, 118, 0.2);
-}
-
-/* Roadmap Section Layout */
-.roadmap-section {
-  display: none;
-}
-
-.roadmap-section.active {
-  display: block;
-}
-
-/* Title Block */
-.roadmap-intro {
-  margin-bottom: 50px;
-  text-align: center;
-}
-
-.roadmap-intro h3 {
-  font-size: 32px;
-  color: #fff;
-  margin: 0 0 10px 0;
-  font-weight: 800;
-}
-
-.roadmap-intro p {
-  color: var(--text-muted);
-  font-size: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-
-/* TREE 1: Linear Cyber Learning Roadmap */
-.linear-tree-container {
-  position: relative;
-  max-width: 600px;
-  margin: 0 auto 80px auto;
-  padding: 20px 0;
-}
-
-/* Connecting Line SVG for linear tree */
-.tree-connector-svg {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.linear-node {
-  position: relative;
-  z-index: 2;
-  display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 40px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--dash-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
 }
 
-.linear-node:last-child {
-  margin-bottom: 0;
+.topbar-avatar:hover {
+  border-color: var(--dash-green);
 }
 
-/* TREE 2: Grid Layout for Specialized Tracks */
-.tracks-grid {
+/* ===================================================================
+   CONTENT AREA
+   =================================================================== */
+.content-area {
+  flex: 1;
+  padding: 32px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* ---- Section Header ---- */
+.section-header {
+  margin-bottom: 28px;
+}
+
+.section-header h2 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.section-header p {
+  font-size: 0.92rem;
+  color: var(--dash-text-muted);
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+/* ===================================================================
+   PATH FILTERS (Tabs)
+   =================================================================== */
+.path-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 18px;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 6px;
+  color: var(--dash-text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+  color: var(--dash-text);
+  border-color: var(--dash-border-light);
+  background: var(--dash-surface-hover);
+}
+
+.filter-btn.active {
+  color: var(--dash-green);
+  background: var(--dash-green-dim);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+/* ===================================================================
+   LEARNING PATH CARDS – Large THM/HTB Style
+   =================================================================== */
+.paths-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  position: relative;
-  z-index: 2;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
 }
 
-.track-column {
-  background: rgba(18, 24, 36, 0.4);
-  border: 1px solid rgba(36, 48, 70, 0.5);
-  border-radius: 16px;
-  padding: 25px 15px;
-  min-height: 500px;
+.path-card-lg {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+}
+
+.path-card-lg:hover {
+  border-color: var(--dash-border-light);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Card Image */
+.path-card-image {
   position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: var(--dash-surface-light);
 }
 
-.track-header {
-  text-align: center;
-  margin-bottom: 10px;
+.path-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
 }
 
-.track-header h4 {
-  font-size: 18px;
-  margin: 0;
-  color: #fff;
-  font-weight: 700;
+.path-card-lg:hover .path-card-image img {
+  transform: scale(1.05);
+}
+
+/* Difficulty Badge on Image */
+.path-difficulty {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.track-header p {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin: 5px 0 0 0;
-  line-height: 1.4;
+.path-difficulty.beginner {
+  background: var(--dash-green-dim);
+  color: var(--dash-green);
+  border: 1px solid rgba(74, 222, 128, 0.25);
 }
 
-/* Connecting line inside column */
-.column-connector-svg {
-  position: absolute;
-  top: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: calc(100% - 130px);
-  z-index: 1;
-  pointer-events: none;
+.path-difficulty.intermediate {
+  background: var(--dash-blue-dim);
+  color: var(--dash-blue);
+  border: 1px solid rgba(56, 189, 248, 0.25);
 }
 
-.track-node {
-  position: relative;
-  z-index: 2;
+.path-difficulty.advanced {
+  background: var(--dash-red-dim);
+  color: var(--dash-red);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+/* Card Content */
+.path-card-content {
+  padding: 20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  flex: 1;
 }
 
-/* Roadmap Cards (Common Style) */
-.roadmap-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
+.path-card-content h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.path-card-content > p {
+  font-size: 0.84rem;
+  color: var(--dash-text-muted);
+  margin: 0 0 16px;
+  line-height: 1.55;
+  flex: 1;
+}
+
+/* Meta Row (Hours, Modules, Rooms) */
+.path-meta-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--dash-text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.meta-item svg {
+  opacity: 0.6;
+}
+
+/* Progress Bar */
+.path-progress-bar {
+  margin-bottom: 16px;
+}
+
+.progress-track {
   width: 100%;
-  max-width: 260px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  position: relative;
-  cursor: pointer;
-  text-decoration: none;
+  height: 6px;
+  background: var(--dash-surface-light);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
 }
 
-.roadmap-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-}
-
-.roadmap-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Status colors and glows */
-.roadmap-card.accent-green:hover {
-  border-color: var(--accent-green);
-  box-shadow: 0 0 20px var(--accent-green-glow);
-}
-
-.roadmap-card.accent-blue:hover {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 20px var(--accent-blue-glow);
-}
-
-.roadmap-card.accent-purple:hover {
-  border-color: var(--accent-purple);
-  box-shadow: 0 0 20px var(--accent-purple-glow);
-}
-
-/* Card Badge/Emblem */
-.card-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.roadmap-card.accent-green .card-icon-box {
-  color: var(--accent-green);
-  border-color: rgba(0, 230, 118, 0.3);
-}
-
-.roadmap-card.accent-blue .card-icon-box {
-  color: var(--accent-blue);
-  border-color: rgba(0, 176, 255, 0.3);
-}
-
-.roadmap-card.accent-purple .card-icon-box {
-  color: var(--accent-purple);
-  border-color: rgba(213, 0, 249, 0.3);
-}
-
-/* Card Details */
-.card-body {
-  flex-grow: 1;
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--dash-green), #22d3ee);
+  transition: width 0.5s ease;
   min-width: 0;
 }
 
-.card-body h5 {
-  margin: 0;
-  font-size: 14px;
-  color: #fff;
+.progress-text {
+  font-size: 0.72rem;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card-tag {
+  color: var(--dash-text-dim);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
-.roadmap-card.accent-green .card-tag {
-  color: var(--accent-green);
-}
-
-.roadmap-card.accent-blue .card-tag {
-  color: var(--accent-blue);
-}
-
-.roadmap-card.accent-purple .card-tag {
-  color: var(--accent-purple);
-}
-
-/* Progress circle (SVG loader) */
-.progress-circle-box {
-  width: 32px;
-  height: 32px;
-  position: relative;
-  flex-shrink: 0;
-  display: flex;
+/* Enroll / Start Button */
+.path-enroll-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.progress-circle-box svg {
-  transform: rotate(-90deg);
-  width: 32px;
-  height: 32px;
-}
-
-.progress-circle-box circle {
-  fill: none;
-  stroke-width: 3px;
-}
-
-.progress-circle-box .bg-circle {
-  stroke: rgba(255, 255, 255, 0.05);
-}
-
-.progress-circle-box .val-circle {
-  stroke-dasharray: 88; /* 2 * PI * r (r=14) */
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.5s ease-in-out;
-}
-
-.roadmap-card.accent-green .val-circle {
-  stroke: var(--accent-green);
-}
-
-.roadmap-card.accent-blue .val-circle {
-  stroke: var(--accent-blue);
-}
-
-.roadmap-card.accent-purple .val-circle {
-  stroke: var(--accent-purple);
-}
-
-.progress-circle-box span {
-  position: absolute;
-  font-size: 9px;
-  font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-  color: #fff;
-}
-
-/* Connectors path styling */
-.connector-line {
-  stroke: var(--border-color);
-  stroke-width: 2px;
-  fill: none;
-  stroke-dasharray: 6 4;
-}
-
-.connector-line.completed {
-  stroke: var(--accent-green);
-  stroke-dasharray: none;
-  animation: pulse-line 2s infinite linear;
-}
-
-/* Floating Robot Mascot */
-.robot-mascot-container {
-  position: fixed;
-  bottom: 30px;
-  right: 40px;
-  z-index: 100;
-  pointer-events: none;
-}
-
-.robot-mascot {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  pointer-events: auto;
+  padding: 10px 0;
+  background: var(--dash-green-dim);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 6px;
+  color: var(--dash-green);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+  font-family: inherit;
   cursor: pointer;
-  filter: drop-shadow(0 0 15px rgba(0, 176, 255, 0.4));
-  animation: float-mascot 4s ease-in-out infinite;
+  transition: all 0.15s ease;
 }
 
-.robot-mascot svg {
-  width: 100%;
-  height: 100%;
+.path-enroll-btn:hover {
+  background: rgba(74, 222, 128, 0.22);
+  border-color: rgba(74, 222, 128, 0.4);
+  transform: translateY(-1px);
 }
 
-.robot-laser-beam {
-  position: absolute;
-  top: 30px;
-  right: 60px;
-  height: 2px;
-  width: 0;
-  background: linear-gradient(90deg, var(--accent-blue), transparent);
-  transform-origin: right center;
-  opacity: 0;
-  pointer-events: none;
+/* ===================================================================
+   ANIMATIONS
+   =================================================================== */
+.path-card-lg {
+  animation: cardFadeIn 0.4s ease both;
 }
 
-.robot-mascot:hover .robot-laser-beam {
-  animation: laser-shoot 0.8s ease-out;
-}
+.path-card-lg:nth-child(1) { animation-delay: 0.05s; }
+.path-card-lg:nth-child(2) { animation-delay: 0.1s; }
+.path-card-lg:nth-child(3) { animation-delay: 0.15s; }
+.path-card-lg:nth-child(4) { animation-delay: 0.2s; }
+.path-card-lg:nth-child(5) { animation-delay: 0.25s; }
+.path-card-lg:nth-child(6) { animation-delay: 0.3s; }
+.path-card-lg:nth-child(7) { animation-delay: 0.35s; }
+.path-card-lg:nth-child(8) { animation-delay: 0.4s; }
 
-/* Keyframes */
-@keyframes float-mascot {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(3deg);
-  }
-}
-
-@keyframes laser-shoot {
-  0% {
-    width: 0;
-    opacity: 1;
-  }
-  50% {
-    width: 300px;
-    opacity: 0.8;
-  }
-  100% {
-    width: 600px;
+@keyframes cardFadeIn {
+  from {
     opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
+/* Hidden cards by filter */
+.path-card-lg.hidden {
+  display: none;
 }
 
-@keyframes scan-horizontal {
-  0% {
+/* ===================================================================
+   RESPONSIVE – Tablet
+   =================================================================== */
+@media (max-width: 1024px) {
+  .sidebar {
     transform: translateX(-100%);
   }
-  100% {
-    transform: translateX(100%);
-  }
-}
 
-@keyframes pulse-line {
-  0% {
-    stroke-dashoffset: 20;
+  .sidebar.open {
+    transform: translateX(0);
   }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
 
-/* Responsive Grid */
-@media (max-width: 1100px) {
-  .tracks-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .dashboard-main {
+    margin-left: 0;
   }
-  
-  .column-connector-svg {
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .topbar {
+    padding: 0 20px;
+  }
+
+  .content-area {
+    padding: 24px 20px;
+  }
+
+  .topbar-stat:nth-child(3) {
     display: none;
   }
 }
 
-@media (max-width: 600px) {
-  .tracks-grid {
+/* ===================================================================
+   RESPONSIVE – Mobile
+   =================================================================== */
+@media (max-width: 700px) {
+  .paths-grid {
     grid-template-columns: 1fr;
   }
-  
-  .profile-banner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+
+  .path-card-image {
+    height: 170px;
   }
-  
-  .stats-group {
-    width: 100%;
-    justify-content: space-between;
+
+  .topbar-greeting h1 {
+    font-size: 1.05rem;
   }
+
+  .topbar-right {
+    gap: 14px;
+  }
+
+  .topbar-stat:nth-child(2) {
+    display: none;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .content-area {
+    padding: 20px 16px;
+  }
+}
+
+/* ===================================================================
+   SIDEBAR OVERLAY (mobile)
+   =================================================================== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 45;
+}
+
+.sidebar-overlay.visible {
+  display: block;
+}
+
+/* ===================================================================
+   SCROLLBAR
+   =================================================================== */
+.sidebar-nav::-webkit-scrollbar,
+.content-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track,
+.content-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb,
+.content-area::-webkit-scrollbar-thumb {
+  background: var(--dash-border);
+  border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover,
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: var(--dash-border-light);
 }
