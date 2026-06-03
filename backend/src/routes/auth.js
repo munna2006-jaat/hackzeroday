@@ -75,6 +75,10 @@ router.post("/signup", async (req, res) => {
   await prisma.emailOtp.create({ data });
   const emailResult = await sendOtpEmail({ email, otp, purpose: "EMAIL_VERIFY" });
 
+  if (emailResult.error) {
+    return res.status(502).json({ message: emailResult.error });
+  }
+
   return res.status(201).json({
     message: "Account created. Check your email for the verification OTP.",
     token: signToken(user),
@@ -126,6 +130,10 @@ router.post("/send-otp", async (req, res) => {
   const { data, otp } = await createOtpRecordData(user, purpose);
   await prisma.emailOtp.create({ data });
   const emailResult = await sendOtpEmail({ email, otp, purpose });
+
+  if (emailResult.error) {
+    return res.status(502).json({ message: emailResult.error });
+  }
 
   return res.json({
     message: "OTP sent. Check your email inbox.",

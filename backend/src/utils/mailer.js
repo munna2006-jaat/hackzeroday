@@ -10,6 +10,9 @@ function getTransporter() {
     host: env.emailHost,
     port: env.emailPort,
     secure: env.emailSecure,
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
     auth: {
       user: env.emailUser,
       pass: env.emailPass
@@ -35,12 +38,25 @@ export async function sendOtpEmail({ email, otp, purpose }) {
     return { preview: "Email env vars missing; OTP logged on server console." };
   }
 
-  await transporter.sendMail({
-    from: env.emailFrom,
-    to: email,
-    subject,
-    text
-  });
+  try {
+    await transporter.sendMail({
+      from: env.emailFrom,
+      to: email,
+      subject,
+      text
+    });
 
-  return { preview: null };
+    return { preview: null };
+  } catch (error) {
+    console.error("[email] Failed to send OTP:", {
+      code: error.code,
+      command: error.command,
+      message: error.message
+    });
+
+    return {
+      error:
+        "OTP could not be sent. Check EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE, EMAIL_USER, and EMAIL_PASS."
+    };
+  }
 }
