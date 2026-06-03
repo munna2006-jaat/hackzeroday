@@ -1,6 +1,8 @@
 import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
 
+const resendUrl = "https://api.resend.com/emails";
+
 function getTransporter() {
   if (!env.emailUser || !env.emailPass) {
     return null;
@@ -21,7 +23,6 @@ function getTransporter() {
 }
 
 export async function sendOtpEmail({ email, otp, purpose }) {
-  const transporter = getTransporter();
   const subject =
     purpose === "LOGIN" ? "Your HackZeroDay login OTP" : "Verify your HackZeroDay email";
 
@@ -32,6 +33,42 @@ export async function sendOtpEmail({ email, otp, purpose }) {
     "",
     "If you did not request this, ignore this email."
   ].join("\n");
+
+  if (env.resendApiKey) {
+    try {
+      const response = await fetch(resendUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.resendApiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: env.emailFrom || "HackZeroDay <onboarding@resend.dev>",
+          to: email,
+          subject,
+          text
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Resend API request failed.");
+      }
+
+      return { preview: null };
+    } catch (error) {
+      console.error("[email] Resend failed to send OTP:", {
+        message: error.message
+      });
+
+      return {
+        error: "OTP could not be sent through Resend. Check RESEND_API_KEY and EMAIL_FROM."
+      };
+    }
+  }
+
+  const transporter = getTransporter();
 
   if (!transporter) {
     console.log(`[email disabled] ${subject} for ${email}: ${otp}`);

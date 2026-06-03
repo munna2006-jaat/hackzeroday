@@ -27,5 +27,6 @@ export const env = {
   emailUser: cleanEnv(process.env.EMAIL_USER),
   jwtSecret: cleanEnv(process.env.JWT_SECRET, "dev-only-change-this-secret"),
   otpExpiresMinutes: Number(cleanEnv(process.env.OTP_EXPIRES_MINUTES, 10)),
-  port: Number(cleanEnv(process.env.PORT, 5000))
+  port: Number(cleanEnv(process.env.PORT, 5000)),
+  resendApiKey: cleanEnv(process.env.RESEND_API_KEY)
 };

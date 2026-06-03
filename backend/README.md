@@ -37,8 +37,12 @@ EMAIL_SECURE=true
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-gmail-app-password
 EMAIL_FROM=HackZeroDay <your-email@gmail.com>
+RESEND_API_KEY=re_xxxxxxxxx
 OTP_EXPIRES_MINUTES=10
 ```
+
+Prefer `RESEND_API_KEY` on Render because SMTP ports can time out on hosted
+platforms. SMTP settings are kept as a fallback for local development.
 
 ## API Endpoints
 
