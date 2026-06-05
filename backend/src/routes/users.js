@@ -18,6 +18,14 @@ const passwordChangeSchema = z.object({
   newPassword: z.string().min(8, "New password must be at least 8 characters")
 });
 
+const createTeamSchema = z.object({
+  teamName: z.string().trim().min(3, "Team name must be at least 3 characters.").max(48, "Team name is too long.")
+});
+
+const joinTeamSchema = z.object({
+  inviteCode: z.string().trim().min(6, "Invite code is required.").max(16)
+});
+
 // Static CTF data stored in memory for interactive demo
 const ctfs = [
   {
@@ -105,6 +113,34 @@ const ctfs = [
     matchup: "All India Inter-College Open"
   }
 ];
+
+function generateInviteCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "HZD-";
+
+  for (let i = 0; i < 6; i += 1) {
+    code += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+
+  return code;
+}
+
+function publicTeam(team, userEmail) {
+  if (!team) return null;
+
+  return {
+    id: team.id,
+    eventId: team.eventId,
+    teamName: team.teamName,
+    college: team.college,
+    inviteCode: team.inviteCode,
+    captainId: team.captainId,
+    memberEmails: team.memberEmails,
+    maxMembers: team.maxMembers,
+    memberCount: team.memberEmails.length,
+    isCaptain: team.captain?.email === userEmail || false
+  };
+}
 
 // 1. Update Profile
 router.put("/profile", requireAuth, async (req, res) => {
@@ -252,11 +288,30 @@ router.get("/leaderboard", requireAuth, async (req, res) => {
 });
 
 // 5. CTFs list
-router.get("/ctfs", requireAuth, (req, res) => {
+router.get("/ctfs", requireAuth, async (req, res) => {
   const userCollege = req.user.college || "";
   const userId = req.user.id;
+  const userEmail = req.user.email;
+
+  const userTeams = await prisma.ctfTeam.findMany({
+    where: {
+      OR: [
+        { captainId: userId },
+        { memberEmails: { has: userEmail } }
+      ]
+    },
+    include: {
+      captain: {
+        select: { email: true }
+      }
+    }
+  });
+
+  const teamByEvent = new Map(userTeams.map((team) => [team.eventId, team]));
 
   const responseCtfs = ctfs.map((ctf) => {
+    const team = teamByEvent.get(ctf.id);
+
     return {
       id: ctf.id,
       title: ctf.title,
@@ -271,7 +326,10 @@ router.get("/ctfs", requireAuth, (req, res) => {
       points: ctf.points,
       matchup: ctf.matchup,
       registered: ctf.registeredUsers.has(userId),
-      registrationCount: ctf.registeredUsers.size
+      registrationCount: ctf.registeredUsers.size,
+      team: publicTeam(team, userEmail),
+      teamRequired: true,
+      maxTeamSize: ctf.type === "college-vs-college" ? 5 : 4
     };
   });
 
@@ -326,6 +384,134 @@ router.post("/ctfs/:id/register", requireAuth, (req, res) => {
     message: registered ? "Registered for CTF successfully! +150 Points awarded for training." : "Registration cancelled.",
     registered,
     registrationCount: ctf.registeredUsers.size
+  });
+});
+
+// 7. Create team for CTF event
+router.post("/ctfs/:id/team", requireAuth, async (req, res) => {
+  const parsed = createTeamSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.issues[0].message });
+  }
+
+  const ctf = ctfs.find((event) => event.id === req.params.id);
+  if (!ctf) {
+    return res.status(404).json({ message: "CTF event not found." });
+  }
+
+  const existingTeam = await prisma.ctfTeam.findFirst({
+    where: {
+      eventId: ctf.id,
+      OR: [
+        { captainId: req.user.id },
+        { memberEmails: { has: req.user.email } }
+      ]
+    }
+  });
+
+  if (existingTeam) {
+    return res.status(409).json({ message: "You already have a team for this CTF." });
+  }
+
+  let inviteCode = generateInviteCode();
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const existingCode = await prisma.ctfTeam.findUnique({ where: { inviteCode } });
+    if (!existingCode) break;
+    inviteCode = generateInviteCode();
+  }
+
+  const team = await prisma.ctfTeam.create({
+    data: {
+      eventId: ctf.id,
+      eventTitle: ctf.title,
+      eventType: ctf.type,
+      teamName: parsed.data.teamName,
+      college: req.user.college || ctf.college || null,
+      inviteCode,
+      captainId: req.user.id,
+      memberEmails: [req.user.email],
+      maxMembers: ctf.type === "college-vs-college" ? 5 : 4
+    },
+    include: {
+      captain: {
+        select: { email: true }
+      }
+    }
+  });
+
+  ctf.registeredUsers.add(req.user.id);
+
+  return res.status(201).json({
+    message: "Team created. Share the invite code with your teammates.",
+    team: publicTeam(team, req.user.email)
+  });
+});
+
+// 8. Join team using invite code
+router.post("/ctfs/:id/team/join", requireAuth, async (req, res) => {
+  const parsed = joinTeamSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.issues[0].message });
+  }
+
+  const ctf = ctfs.find((event) => event.id === req.params.id);
+  if (!ctf) {
+    return res.status(404).json({ message: "CTF event not found." });
+  }
+
+  const inviteCode = parsed.data.inviteCode.toUpperCase();
+  const team = await prisma.ctfTeam.findUnique({
+    where: { inviteCode },
+    include: {
+      captain: {
+        select: { email: true }
+      }
+    }
+  });
+
+  if (!team || team.eventId !== ctf.id) {
+    return res.status(404).json({ message: "No team found for this event with that invite code." });
+  }
+
+  if (team.memberEmails.includes(req.user.email)) {
+    return res.json({ message: "You are already in this team.", team: publicTeam(team, req.user.email) });
+  }
+
+  const existingTeam = await prisma.ctfTeam.findFirst({
+    where: {
+      eventId: ctf.id,
+      OR: [
+        { captainId: req.user.id },
+        { memberEmails: { has: req.user.email } }
+      ]
+    }
+  });
+
+  if (existingTeam) {
+    return res.status(409).json({ message: "You already belong to a team for this CTF." });
+  }
+
+  if (team.memberEmails.length >= team.maxMembers) {
+    return res.status(409).json({ message: "This team is already full." });
+  }
+
+  const updatedTeam = await prisma.ctfTeam.update({
+    where: { id: team.id },
+    data: {
+      memberEmails: [...team.memberEmails, req.user.email]
+    },
+    include: {
+      captain: {
+        select: { email: true }
+      }
+    }
+  });
+
+  ctf.registeredUsers.add(req.user.id);
+
+  return res.json({
+    message: "Joined team successfully.",
+    team: publicTeam(updatedTeam, req.user.email)
   });
 });
 

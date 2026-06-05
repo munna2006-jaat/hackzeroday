@@ -32,6 +32,7 @@ model User {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   otps           EmailOtp[]
+  ctfTeams       CtfTeam[]  @relation("TeamCaptain")
 }
 
 model EmailOtp {
@@ -47,4 +48,24 @@ model EmailOtp {
 
   @@index([email, purpose])
   @@index([userId, purpose])
+}
+
+model CtfTeam {
+  id           String   @id @default(cuid())
+  eventId      String
+  eventTitle   String
+  eventType    String
+  teamName     String
+  college      String?
+  inviteCode   String   @unique
+  captainId    String
+  memberEmails String[] @default([])
+  maxMembers   Int      @default(4)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  captain      User     @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([captainId])
+  @@index([college])
 }

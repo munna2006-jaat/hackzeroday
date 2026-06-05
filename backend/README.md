@@ -53,6 +53,13 @@ POST /api/auth/login
 POST /api/auth/send-otp
 POST /api/auth/verify-otp
 GET  /api/auth/me
+PUT  /api/users/profile
+PUT  /api/users/change-password
+GET  /api/users/leaderboard
+GET  /api/users/ctfs
+POST /api/users/ctfs/:id/register
+POST /api/users/ctfs/:id/team
+POST /api/users/ctfs/:id/team/join
 ```
 
 ## Notes

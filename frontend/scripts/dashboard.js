@@ -677,6 +677,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         const badgeClass = ctf.status === "active" ? "status-live" : "status-upcoming";
         const btnText = ctf.registered ? "Registered" : "Register Now";
         const btnClass = ctf.registered ? "cyber-btn-registered" : "cyber-btn-action";
+        const team = ctf.team;
+        const teamBlock = team
+          ? `
+            <div class="ctf-team-panel team-active">
+              <div class="team-panel-head">
+                <span class="team-label">Your Team</span>
+                <strong>${escapeHtml(team.teamName)}</strong>
+              </div>
+              <div class="team-meta-grid">
+                <span><b>${team.memberCount}/${team.maxMembers}</b> Members</span>
+                <span><b>${team.isCaptain ? "Captain" : "Member"}</b> Role</span>
+              </div>
+              <label class="invite-code-box">
+                Invite Code
+                <input value="${escapeHtml(team.inviteCode)}" readonly />
+              </label>
+            </div>
+          `
+          : `
+            <div class="ctf-team-panel">
+              <div class="team-panel-head">
+                <span class="team-label">Team Registration</span>
+                <strong>${ctf.type === "college-vs-college" ? "Official college squad" : "Campus practice team"}</strong>
+              </div>
+              <div class="team-action-grid">
+                <label>
+                  Team name
+                  <input class="team-name-input" data-ctf-id="${ctf.id}" placeholder="e.g. NullSec Falcons" />
+                </label>
+                <button class="team-create-btn" data-ctf-id="${ctf.id}" type="button">Create Team</button>
+              </div>
+              <div class="team-action-grid">
+                <label>
+                  Invite code
+                  <input class="team-code-input" data-ctf-id="${ctf.id}" placeholder="HZD-ABC123" />
+                </label>
+                <button class="team-join-btn" data-ctf-id="${ctf.id}" type="button">Join Team</button>
+              </div>
+            </div>
+          `;
 
         return `
         <article class="ctf-card ${ctf.status === "active" ? "active-event" : ""}">
@@ -709,6 +749,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span><strong>${ctf.points}</strong> Points</span>
               <span><strong>${ctf.registrationCount}</strong> Registered</span>
             </div>
+
+            ${teamBlock}
           </div>
 
           <div class="ctf-card-footer">
@@ -720,6 +762,74 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
       })
       .join("");
+
+    container.querySelectorAll(".team-create-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const ctfId = btn.dataset.ctfId;
+        const input = container.querySelector(`.team-name-input[data-ctf-id="${ctfId}"]`);
+        const teamName = input?.value.trim();
+
+        if (!teamName) {
+          showToast("Enter a team name first.", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/users/ctfs/${ctfId}/team`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ teamName })
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Failed to create team.");
+          }
+
+          await loadCTFData();
+          showToast(`${data.message} Code: ${data.team.inviteCode}`);
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      });
+    });
+
+    container.querySelectorAll(".team-join-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const ctfId = btn.dataset.ctfId;
+        const input = container.querySelector(`.team-code-input[data-ctf-id="${ctfId}"]`);
+        const inviteCode = input?.value.trim().toUpperCase();
+
+        if (!inviteCode) {
+          showToast("Enter an invite code first.", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/users/ctfs/${ctfId}/team/join`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ inviteCode })
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Failed to join team.");
+          }
+
+          await loadCTFData();
+          showToast(data.message);
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      });
+    });
 
     container.querySelectorAll(".ctf-register-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {

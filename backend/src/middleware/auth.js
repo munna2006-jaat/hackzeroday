@@ -20,6 +20,8 @@ export async function requireAuth(req, res, next) {
         role: true,
         college: true,
         learningGoal: true,
+        points: true,
+        solvedCount: true,
         emailVerified: true,
         createdAt: true
       }
