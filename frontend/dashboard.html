@@ -387,6 +387,249 @@
           </div>
         </section>
 
+        <!-- Section: Campus CTF -->
+        <section class="content-section hidden" id="sectionCTF">
+          <div class="section-header">
+            <h2>Campus CTF</h2>
+            <p>Battle it out in local In-Campus matches or represent your college in global Inter-College Cyber Clashes.</p>
+          </div>
+
+          <!-- CTF Sub-navigation (Tabs) -->
+          <div class="ctf-tabs">
+            <button class="ctf-tab-btn active" data-ctf-tab="in-campus">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              In-Campus CTF
+            </button>
+            <button class="ctf-tab-btn" data-ctf-tab="college-vs-college">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              College vs College
+            </button>
+          </div>
+
+          <!-- In-Campus Container -->
+          <div class="ctf-tab-panel" id="panelInCampus">
+            <div class="college-alert-banner hidden" id="collegeAlertBanner">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div>
+                <strong>College not set!</strong> Update your college in <a href="#" class="alert-link" id="linkToSettings">Settings</a> or <a href="#" class="alert-link" id="linkToProfile">Profile</a> to see your In-Campus CTFs.
+              </div>
+            </div>
+
+            <div class="college-info-banner" id="collegeInfoBanner">
+              <span class="active-badge">Active Campus</span>
+              <p>Showing events for: <strong id="currentUserCollegeText">Your College</strong></p>
+            </div>
+
+            <div class="ctfs-grid" id="inCampusGrid">
+              <!-- In-Campus cards will be rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- College vs College Container -->
+          <div class="ctf-tab-panel hidden" id="panelCollegeVsCollege">
+            <div class="ctfs-grid" id="collegeVsCollegeGrid">
+              <!-- Inter-college cards will be rendered dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Leaderboard -->
+        <section class="content-section hidden" id="sectionLeaderboard">
+          <div class="section-header">
+            <h2>Leaderboard</h2>
+            <p>Compare scores with hackers worldwide or see how your college stacks up against other institutions.</p>
+          </div>
+
+          <div class="leaderboard-controls">
+            <div class="leaderboard-tabs">
+              <button class="leader-tab-btn active" data-leader-tab="global">Global Standings</button>
+              <button class="leader-tab-btn" data-leader-tab="colleges">College Rankings</button>
+            </div>
+            <div class="search-wrapper">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="leaderboardSearch" placeholder="Search rankings...">
+            </div>
+          </div>
+
+          <!-- Global Standings Table -->
+          <div class="leaderboard-panel" id="panelLeaderGlobal">
+            <div class="table-container">
+              <table class="leader-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>Hacker</th>
+                    <th>College</th>
+                    <th style="text-align: center;">Solved</th>
+                    <th style="text-align: right;">Points</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderGlobalBody">
+                  <!-- Dynamic user list -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- College Rankings Table -->
+          <div class="leaderboard-panel hidden" id="panelLeaderColleges">
+            <div class="table-container">
+              <table class="leader-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>College</th>
+                    <th style="text-align: center;">Active Hackers</th>
+                    <th style="text-align: center;">Solved</th>
+                    <th style="text-align: right;">Total Points</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderCollegesBody">
+                  <!-- Dynamic colleges list -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: My Profile -->
+        <section class="content-section hidden" id="sectionProfile">
+          <div class="section-header">
+            <h2>My Profile</h2>
+            <p>Manage your account identity, learning goal, and track your global standing stats.</p>
+          </div>
+
+          <div class="profile-layout">
+            <!-- Left Side: Stats Card -->
+            <div class="profile-card profile-stats-card">
+              <div class="profile-avatar-large" id="profileAvatarLarge">H</div>
+              <h3 id="profileNameText">Hacker</h3>
+              <p class="profile-email-text" id="profileEmailText">hacker@hackzeroday.com</p>
+              
+              <div class="profile-badge-row">
+                <span class="user-role-badge" id="profileRoleBadge">STUDENT</span>
+              </div>
+
+              <div class="profile-stats-grid">
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profilePoints">0</span>
+                  <span class="stat-box-lbl">Points</span>
+                </div>
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profileRank">—</span>
+                  <span class="stat-box-lbl">Global Rank</span>
+                </div>
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profileStreak">0</span>
+                  <span class="stat-box-lbl">Streak</span>
+                </div>
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profileSolved">0</span>
+                  <span class="stat-box-lbl">Solved</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Details & Edit -->
+            <div class="profile-card profile-details-card">
+              <h3>Profile Details</h3>
+              
+              <form id="editProfileForm" class="cyber-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="profileInputName">Full Name</label>
+                    <input type="text" id="profileInputName" required placeholder="Enter your full name">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="profileInputCollege">College / Institution</label>
+                    <input type="text" id="profileInputCollege" required placeholder="e.g. IIT Delhi, DTU">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="profileInputGoal">Learning Goal</label>
+                    <input type="text" id="profileInputGoal" placeholder="e.g. Bug Bounty, Red Teaming, Web Security">
+                  </div>
+                </div>
+                <button type="submit" class="cyber-btn" id="btnUpdateProfile">
+                  <span>Save Profile Details</span>
+                </button>
+              </form>
+              <div class="form-message" id="profileFormMessage"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Settings -->
+        <section class="content-section hidden" id="sectionSettings">
+          <div class="section-header">
+            <h2>Settings</h2>
+            <p>Customize your experience, secure your password, or manage your security preferences.</p>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Card 1: Change Password -->
+            <div class="settings-card">
+              <h3>Security Settings</h3>
+              <p class="settings-card-sub">Change your current password to secure your account.</p>
+
+              <form id="changePasswordForm" class="cyber-form">
+                <div class="form-group">
+                  <label for="inputOldPassword">Current Password</label>
+                  <input type="password" id="inputOldPassword" required placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                  <label for="inputNewPassword">New Password</label>
+                  <input type="password" id="inputNewPassword" required placeholder="Enter new password (min. 8 chars)">
+                </div>
+                <div class="form-group">
+                  <label for="inputConfirmPassword">Confirm New Password</label>
+                  <input type="password" id="inputConfirmPassword" required placeholder="Confirm new password">
+                </div>
+                <button type="submit" class="cyber-btn" id="btnChangePassword">
+                  <span>Update Password</span>
+                </button>
+              </form>
+              <div class="form-message" id="settingsFormMessage"></div>
+            </div>
+
+            <!-- Card 2: Customization & Preferences -->
+            <div class="settings-card">
+              <h3>Interface Theme</h3>
+              <p class="settings-card-sub">Select your custom theme styling accent color.</p>
+              
+              <div class="theme-selector">
+                <button class="theme-btn active" data-theme="green" style="--theme-accent: #4ade80;">
+                  <span class="color-dot"></span>
+                  Green (Def)
+                </button>
+                <button class="theme-btn" data-theme="blue" style="--theme-accent: #38bdf8;">
+                  <span class="color-dot"></span>
+                  Blue (Sea)
+                </button>
+                <button class="theme-btn" data-theme="purple" style="--theme-accent: #a78bfa;">
+                  <span class="color-dot"></span>
+                  Purple (Void)
+                </button>
+                <button class="theme-btn" data-theme="red" style="--theme-accent: #f87171;">
+                  <span class="color-dot"></span>
+                  Red (Breach)
+                </button>
+              </div>
+
+              <div class="danger-zone-settings">
+                <h3 class="danger-title">Danger Zone</h3>
+                <p>Deleting your account is permanent. All your points, CTF records, and statistics will be wiped out.</p>
+                <button class="cyber-btn danger" id="btnDeleteAccount">
+                  <span>Delete Account Permanently</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
 

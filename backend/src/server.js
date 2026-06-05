@@ -6,6 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { env } from "./config/env.js";
 import authRouter from "./routes/auth.js";
+import usersRouter from "./routes/users.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/users", usersRouter);
 
 app.use(express.static(frontendDir));
 
