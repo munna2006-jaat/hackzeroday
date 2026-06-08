@@ -18,6 +18,76 @@ enum OtpPurpose {
   PASSWORD_RESET
 }
 
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model LearningPath {
+  id          String         @id @default(cuid())
+  title       String
+  slug        String         @unique
+  description String         @default("")
+  difficulty  String         @default("beginner")
+  coverImage  String?
+  status      ContentStatus  @default(DRAFT)
+  order       Int            @default(0)
+  hours       Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  pathModules PathModule[]
+
+  @@index([status, order])
+}
+
+model Module {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String       @unique
+  description String       @default("")
+  order       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  pathModules PathModule[]
+  rooms       Room[]
+
+  @@index([order])
+}
+
+model PathModule {
+  id       String       @id @default(cuid())
+  pathId   String
+  moduleId String
+  order    Int          @default(0)
+  path     LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  module   Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([pathId, moduleId])
+  @@index([pathId, order])
+  @@index([moduleId])
+}
+
+model Room {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String        @default("")
+  difficulty  String        @default("easy")
+  duration    String        @default("1h")
+  tasksCount  Int           @default(0)
+  order       Int           @default(0)
+  moduleId    String
+  status      ContentStatus @default(DRAFT)
+  contentHtml String?       @db.Text
+  layoutJson  Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  module      Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@index([moduleId, order])
+  @@index([status])
+}
+
 model User {
   id             String     @id @default(cuid())
   name           String?

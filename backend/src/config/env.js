@@ -26,6 +26,7 @@ export const env = {
   emailSecure: String(process.env.EMAIL_SECURE || "true") === "true",
   emailUser: cleanEnv(process.env.EMAIL_USER),
   jwtSecret: cleanEnv(process.env.JWT_SECRET, "dev-only-change-this-secret"),
+  adminDevKey: cleanEnv(process.env.ADMIN_DEV_KEY, "hackzeroday-dev"),
   otpExpiresMinutes: Number(cleanEnv(process.env.OTP_EXPIRES_MINUTES, 10)),
   port: Number(cleanEnv(process.env.PORT, 5000)),
   resendApiKey: cleanEnv(process.env.RESEND_API_KEY)

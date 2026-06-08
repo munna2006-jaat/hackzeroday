@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paths | HackZeroDay Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/admin.css" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand">
+          <div class="admin-brand-mark">HZ</div>
+          <div>
+            <h1>HackZeroDay</h1>
+            <p>Content Admin</p>
+          </div>
+        </div>
+        <nav class="admin-nav">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="paths.html" data-page="paths">Learning Paths</a>
+          <a href="modules.html" data-page="modules">Modules</a>
+          <a href="rooms.html" data-page="rooms">Rooms</a>
+        </nav>
+        <div class="admin-sidebar-footer">Assign modules to paths using the module dropdown on each path row.</div>
+      </aside>
+
+      <main class="admin-main">
+        <div id="devKeyBanner" class="dev-key-banner"></div>
+        <header class="admin-header">
+          <div>
+            <h2>Learning Paths</h2>
+            <p>Create career paths and assign modules to define the learning journey.</p>
+          </div>
+        </header>
+
+        <div class="admin-grid">
+          <section class="admin-panel">
+            <h3 id="pathFormTitle">Create Path</h3>
+            <form id="pathForm" class="admin-form">
+              <input type="hidden" id="pathId" />
+              <div class="form-row">
+                <label for="pathTitle">Title</label>
+                <input id="pathTitle" required maxlength="160" placeholder="e.g. Pre Security" />
+              </div>
+              <div class="form-row">
+                <label for="pathSlug">Slug (optional)</label>
+                <input id="pathSlug" maxlength="160" placeholder="auto-generated from title" />
+              </div>
+              <div class="form-row">
+                <label for="pathDescription">Description</label>
+                <textarea id="pathDescription" placeholder="What learners will achieve..."></textarea>
+              </div>
+              <div class="form-row-inline">
+                <div class="form-row">
+                  <label for="pathDifficulty">Difficulty</label>
+                  <select id="pathDifficulty">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="pathStatus">Status</label>
+                  <select id="pathStatus">
+                    <option value="DRAFT">Draft</option>
+                    <option value="PUBLISHED">Published</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-inline">
+                <div class="form-row">
+                  <label for="pathHours">Hours</label>
+                  <input id="pathHours" type="number" min="0" value="0" />
+                </div>
+                <div class="form-row">
+                  <label for="pathOrder">Order</label>
+                  <input id="pathOrder" type="number" min="0" value="0" />
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="pathCover">Cover Image URL</label>
+                <input id="pathCover" placeholder="assets/paths/pre-security.png" />
+              </div>
+              <div class="table-actions">
+                <button type="submit" class="btn btn-primary" id="pathSubmitBtn">Create Path</button>
+                <button type="button" class="btn btn-ghost" id="pathCancelBtn" hidden>Cancel Edit</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="admin-panel admin-table-wrap">
+            <h3>All Paths</h3>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Modules</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pathsTableBody">
+                <tr><td colspan="4" class="empty-state">Loading...</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="scripts/admin.js"></script>
+    <script src="scripts/paths.js"></script>
+  </body>
+</html>

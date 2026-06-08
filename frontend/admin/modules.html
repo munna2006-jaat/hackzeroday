@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modules | HackZeroDay Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/admin.css" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand">
+          <div class="admin-brand-mark">HZ</div>
+          <div>
+            <h1>HackZeroDay</h1>
+            <p>Content Admin</p>
+          </div>
+        </div>
+        <nav class="admin-nav">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="paths.html" data-page="paths">Learning Paths</a>
+          <a href="modules.html" data-page="modules">Modules</a>
+          <a href="rooms.html" data-page="rooms">Rooms</a>
+        </nav>
+        <div class="admin-sidebar-footer">Modules can belong to multiple paths. Assign them from the Paths page.</div>
+      </aside>
+
+      <main class="admin-main">
+        <div id="devKeyBanner" class="dev-key-banner"></div>
+        <header class="admin-header">
+          <div>
+            <h2>Modules</h2>
+            <p>Create reusable modules and add rooms inside them.</p>
+          </div>
+        </header>
+
+        <div class="admin-grid">
+          <section class="admin-panel">
+            <h3 id="moduleFormTitle">Create Module</h3>
+            <form id="moduleForm" class="admin-form">
+              <input type="hidden" id="moduleId" />
+              <div class="form-row">
+                <label for="moduleTitle">Title</label>
+                <input id="moduleTitle" required maxlength="160" placeholder="e.g. Web Fundamentals" />
+              </div>
+              <div class="form-row">
+                <label for="moduleSlug">Slug (optional)</label>
+                <input id="moduleSlug" maxlength="160" />
+              </div>
+              <div class="form-row">
+                <label for="moduleDescription">Description</label>
+                <textarea id="moduleDescription"></textarea>
+              </div>
+              <div class="form-row">
+                <label for="moduleOrder">Order</label>
+                <input id="moduleOrder" type="number" min="0" value="0" />
+              </div>
+              <div class="form-row">
+                <label for="modulePathAssign">Quick assign to path (optional)</label>
+                <select id="modulePathAssign">
+                  <option value="">— None —</option>
+                </select>
+              </div>
+              <div class="table-actions">
+                <button type="submit" class="btn btn-primary" id="moduleSubmitBtn">Create Module</button>
+                <button type="button" class="btn btn-ghost" id="moduleCancelBtn" hidden>Cancel Edit</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="admin-panel admin-table-wrap">
+            <h3>All Modules</h3>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Paths</th>
+                  <th>Rooms</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="modulesTableBody">
+                <tr><td colspan="4" class="empty-state">Loading...</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="scripts/admin.js"></script>
+    <script src="scripts/modules.js"></script>
+  </body>
+</html>

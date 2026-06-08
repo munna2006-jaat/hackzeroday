@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms | HackZeroDay Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/admin.css" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand">
+          <div class="admin-brand-mark">HZ</div>
+          <div>
+            <h1>HackZeroDay</h1>
+            <p>Content Admin</p>
+          </div>
+        </div>
+        <nav class="admin-nav">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="paths.html" data-page="paths">Learning Paths</a>
+          <a href="modules.html" data-page="modules">Modules</a>
+          <a href="rooms.html" data-page="rooms">Rooms</a>
+        </nav>
+        <div class="admin-sidebar-footer">Room content editing (GrapesJS) ships in Phase 2.</div>
+      </aside>
+
+      <main class="admin-main">
+        <div id="devKeyBanner" class="dev-key-banner"></div>
+        <header class="admin-header">
+          <div>
+            <h2>Rooms</h2>
+            <p>Create hands-on rooms inside modules. Set metadata now; page designer comes next phase.</p>
+          </div>
+        </header>
+
+        <div class="admin-grid">
+          <section class="admin-panel">
+            <h3 id="roomFormTitle">Create Room</h3>
+            <form id="roomForm" class="admin-form">
+              <input type="hidden" id="roomId" />
+              <div class="form-row">
+                <label for="roomTitle">Room Name</label>
+                <input id="roomTitle" required maxlength="160" placeholder="e.g. SQL Injection" />
+              </div>
+              <div class="form-row">
+                <label for="roomSlug">Slug (optional)</label>
+                <input id="roomSlug" maxlength="160" />
+              </div>
+              <div class="form-row">
+                <label for="roomModule">Parent Module</label>
+                <select id="roomModule" required>
+                  <option value="">Select module...</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="roomDescription">Description</label>
+                <textarea id="roomDescription"></textarea>
+              </div>
+              <div class="form-row-inline">
+                <div class="form-row">
+                  <label for="roomDifficulty">Difficulty</label>
+                  <select id="roomDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="roomStatus">Status</label>
+                  <select id="roomStatus">
+                    <option value="DRAFT">Draft</option>
+                    <option value="PUBLISHED">Published</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-inline">
+                <div class="form-row">
+                  <label for="roomDuration">Duration</label>
+                  <input id="roomDuration" value="1h" placeholder="2h" />
+                </div>
+                <div class="form-row">
+                  <label for="roomTasks">Tasks</label>
+                  <input id="roomTasks" type="number" min="0" value="0" />
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="roomOrder">Order in module</label>
+                <input id="roomOrder" type="number" min="0" value="0" />
+              </div>
+              <div class="table-actions">
+                <button type="submit" class="btn btn-primary" id="roomSubmitBtn">Create Room</button>
+                <button type="button" class="btn btn-ghost" id="roomCancelBtn" hidden>Cancel Edit</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="admin-panel admin-table-wrap">
+            <h3>All Rooms</h3>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Module</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="roomsTableBody">
+                <tr><td colspan="4" class="empty-state">Loading...</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="scripts/admin.js"></script>
+    <script src="scripts/rooms.js"></script>
+  </body>
+</html>

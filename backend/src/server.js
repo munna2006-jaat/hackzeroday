@@ -5,7 +5,9 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import { env } from "./config/env.js";
+import adminRouter from "./routes/admin.js";
 import authRouter from "./routes/auth.js";
+import contentRouter from "./routes/content.js";
 import usersRouter from "./routes/users.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,8 +38,14 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/content", contentRouter);
 
 app.use(express.static(frontendDir));
+
+app.get("/admin", (req, res) => {
+  res.redirect("/admin/index.html");
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(frontendDir, "index.html"));
