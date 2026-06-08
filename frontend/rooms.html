@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms | HackZeroDay Labs</title>
+    <meta name="description" content="Browse hands-on cybersecurity rooms. Learn by doing with guided, beginner-friendly hacking labs." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body" data-page="rooms">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main">
+      <header class="page-header">
+        <div class="page-header-text">
+          <h1>Rooms</h1>
+          <p>Hands-on labs where you learn by hacking. Each room walks you through real techniques step by step.</p>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div class="page-toolbar">
+            <div class="path-filters" id="roomFilters">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="general">General</button>
+              <button class="filter-btn" data-filter="web">Web</button>
+              <button class="filter-btn" data-filter="linux">Linux</button>
+              <button class="filter-btn" data-filter="network">Network</button>
+              <button class="filter-btn" data-filter="offensive">Offensive</button>
+            </div>
+            <div class="search-wrapper">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="roomsSearch" placeholder="Search rooms..." />
+            </div>
+          </div>
+
+          <div class="rooms-grid" id="roomsGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/rooms.js"></script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile | HackZeroDay Labs</title>
+    <meta name="description" content="Manage your HackZeroDay profile, learning goals, and track your progress." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body" data-page="profile">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main">
+      <header class="page-header">
+        <div class="page-header-text">
+          <h1>My Profile</h1>
+          <p>Manage your identity, learning goals, and track your standing on the platform.</p>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div class="profile-layout">
+            <div class="profile-card profile-stats-card">
+              <div class="profile-avatar-large" id="profileAvatarLarge">H</div>
+              <h3 id="profileNameText">Hacker</h3>
+              <p class="profile-email-text" id="profileEmailText">hacker@hackzeroday.com</p>
+              <div class="profile-badge-row">
+                <span class="user-role-badge" id="profileRoleBadge">STUDENT</span>
+              </div>
+              <div class="profile-stats-grid">
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profilePoints">0</span>
+                  <span class="stat-box-lbl">Points</span>
+                </div>
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profileRank">—</span>
+                  <span class="stat-box-lbl">Global Rank</span>
+                </div>
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profileStreak">0</span>
+                  <span class="stat-box-lbl">Streak</span>
+                </div>
+                <div class="profile-stat-box">
+                  <span class="stat-box-val" id="profileSolved">0</span>
+                  <span class="stat-box-lbl">Solved</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-card profile-details-card">
+              <h3>Profile Details</h3>
+              <form id="editProfileForm" class="cyber-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="profileInputName">Full Name</label>
+                    <input type="text" id="profileInputName" required placeholder="Enter your full name" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="profileInputCollege">College / Institution</label>
+                    <input type="text" id="profileInputCollege" required placeholder="e.g. IIT Delhi, DTU" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="profileInputGoal">Learning Goal</label>
+                    <input type="text" id="profileInputGoal" placeholder="e.g. Bug Bounty, Red Teaming, Web Security" />
+                  </div>
+                </div>
+                <button type="submit" class="cyber-btn" id="btnUpdateProfile"><span>Save Profile Details</span></button>
+              </form>
+              <div class="form-message" id="profileFormMessage"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/profile.js"></script>
+  </body>
+</html>

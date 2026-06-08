@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus CTF | HackZeroDay Labs</title>
+    <meta name="description" content="Compete in campus CTF events. Form teams, join inter-college matches, and represent your institution." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body" data-page="ctf">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main">
+      <header class="page-header">
+        <div class="page-header-text">
+          <h1>Campus CTF</h1>
+          <p>Run safe in-campus contests, form teams, and compete in inter-college cyber clashes.</p>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div class="ctf-ops-grid">
+            <article class="ctf-ops-card">
+              <span class="ops-kicker">Team workflow</span>
+              <h3>Create or join before competing</h3>
+              <p>Every CTF supports a team captain, invite code, member limit, and college context for organized registrations.</p>
+            </article>
+            <article class="ctf-ops-card">
+              <span class="ops-kicker">Event formats</span>
+              <h3>In-campus and college-vs-college</h3>
+              <p>Use in-campus contests for club practice and inter-college events for official teams and national league matches.</p>
+            </article>
+          </div>
+
+          <div class="ctf-tabs">
+            <button class="ctf-tab-btn active" data-ctf-tab="in-campus">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              In-Campus CTF
+            </button>
+            <button class="ctf-tab-btn" data-ctf-tab="college-vs-college">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              College vs College
+            </button>
+          </div>
+
+          <div class="ctf-tab-panel" id="panelInCampus">
+            <div class="college-alert-banner hidden" id="collegeAlertBanner">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div>
+                <strong>College not set!</strong> Update your college in <a href="settings.html" class="alert-link">Settings</a> or <a href="profile.html" class="alert-link">Profile</a> to see your In-Campus CTFs.
+              </div>
+            </div>
+            <div class="college-info-banner hidden" id="collegeInfoBanner">
+              <span class="active-badge">Active Campus</span>
+              <p>Showing events for: <strong id="currentUserCollegeText">Your College</strong></p>
+            </div>
+            <div class="ctfs-grid" id="inCampusGrid"></div>
+          </div>
+
+          <div class="ctf-tab-panel hidden" id="panelCollegeVsCollege">
+            <div class="college-info-banner">
+              <span class="active-badge">Inter-College</span>
+              <p>Build one official team per event, share the invite code, and prepare your lineup before the match window opens.</p>
+            </div>
+            <div class="ctfs-grid" id="collegeVsCollegeGrid"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/ctf.js"></script>
+  </body>
+</html>

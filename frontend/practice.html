@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practice | HackZeroDay Labs</title>
+    <meta name="description" content="Sharpen your skills with practice challenges across web, crypto, forensics, and more." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body" data-page="practice">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main">
+      <header class="page-header">
+        <div class="page-header-text">
+          <h1>Practice</h1>
+          <p>Challenge yourself with bite-sized exercises. No walkthroughs — just problems to solve and skills to build.</p>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div class="daily-challenges-card">
+            <div class="section-header section-header-inline">
+              <div>
+                <h2>Daily Challenges</h2>
+                <p>Three fresh challenges every day. Solve them to earn bonus points and keep your streak alive.</p>
+              </div>
+              <span class="active-badge">Resets in 14h</span>
+            </div>
+            <div class="daily-challenges-list" id="dailyChallenges"></div>
+          </div>
+
+          <div class="section-header" style="margin-top: 36px;">
+            <h2>Practice Categories</h2>
+            <p>Pick a category and work through challenges at your own pace. Progress is saved automatically.</p>
+          </div>
+
+          <div class="practice-grid" id="practiceGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/practice.js"></script>
+  </body>
+</html>

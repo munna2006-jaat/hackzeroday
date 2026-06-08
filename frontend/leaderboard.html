@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard | HackZeroDay Labs</title>
+    <meta name="description" content="See how you rank against hackers worldwide and how your college stacks up." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body" data-page="leaderboard">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main">
+      <header class="page-header">
+        <div class="page-header-text">
+          <h1>Leaderboard</h1>
+          <p>Compare scores with hackers worldwide or see how your college ranks against other institutions.</p>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div class="leaderboard-controls">
+            <div class="leaderboard-tabs">
+              <button class="leader-tab-btn active" data-leader-tab="global">Global Standings</button>
+              <button class="leader-tab-btn" data-leader-tab="colleges">College Rankings</button>
+            </div>
+            <div class="search-wrapper">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="leaderboardSearch" placeholder="Search rankings..." />
+            </div>
+          </div>
+
+          <div class="leaderboard-panel" id="panelLeaderGlobal">
+            <div class="table-container">
+              <table class="leader-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>Hacker</th>
+                    <th>College</th>
+                    <th style="text-align: center;">Solved</th>
+                    <th style="text-align: right;">Points</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderGlobalBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="leaderboard-panel hidden" id="panelLeaderColleges">
+            <div class="table-container">
+              <table class="leader-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>College</th>
+                    <th style="text-align: center;">Active Hackers</th>
+                    <th style="text-align: center;">Solved</th>
+                    <th style="text-align: right;">Total Points</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderCollegesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/leaderboard.js"></script>
+  </body>
+</html>

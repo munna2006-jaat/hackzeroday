@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings | HackZeroDay Labs</title>
+    <meta name="description" content="Customize your HackZeroDay experience, change your password, and manage account security." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+  </head>
+  <body class="dashboard-body" data-page="settings">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main">
+      <header class="page-header">
+        <div class="page-header-text">
+          <h1>Settings</h1>
+          <p>Customize your experience, secure your password, and manage your account.</p>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>Security Settings</h3>
+              <p class="settings-card-sub">Change your current password to keep your account secure.</p>
+              <form id="changePasswordForm" class="cyber-form">
+                <div class="form-group">
+                  <label for="inputOldPassword">Current Password</label>
+                  <input type="password" id="inputOldPassword" required placeholder="Enter current password" />
+                </div>
+                <div class="form-group">
+                  <label for="inputNewPassword">New Password</label>
+                  <input type="password" id="inputNewPassword" required placeholder="Enter new password (min. 8 chars)" />
+                </div>
+                <div class="form-group">
+                  <label for="inputConfirmPassword">Confirm New Password</label>
+                  <input type="password" id="inputConfirmPassword" required placeholder="Confirm new password" />
+                </div>
+                <button type="submit" class="cyber-btn" id="btnChangePassword"><span>Update Password</span></button>
+              </form>
+              <div class="form-message" id="settingsFormMessage"></div>
+            </div>
+
+            <div class="settings-card">
+              <h3>Interface Theme</h3>
+              <p class="settings-card-sub">Select your accent color for the platform interface.</p>
+              <div class="theme-selector">
+                <button class="theme-btn active" data-theme="green" style="--theme-accent: #4ade80;"><span class="color-dot"></span>Green (Default)</button>
+                <button class="theme-btn" data-theme="blue" style="--theme-accent: #38bdf8;"><span class="color-dot"></span>Blue (Sea)</button>
+                <button class="theme-btn" data-theme="purple" style="--theme-accent: #a78bfa;"><span class="color-dot"></span>Purple (Void)</button>
+                <button class="theme-btn" data-theme="red" style="--theme-accent: #f87171;"><span class="color-dot"></span>Red (Breach)</button>
+              </div>
+              <div class="danger-zone-settings">
+                <h3 class="danger-title">Danger Zone</h3>
+                <p>Deleting your account is permanent. All your points, CTF records, and statistics will be wiped out.</p>
+                <button class="cyber-btn danger" id="btnDeleteAccount"><span>Delete Account Permanently</span></button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/settings.js"></script>
+  </body>
+</html>
