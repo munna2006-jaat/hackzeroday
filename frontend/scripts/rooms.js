@@ -1,6 +1,6 @@
 /* rooms.js - Rooms browse page */
 
-const ROOMS = [
+const STATIC_ROOMS = [
   { id: "intro-to-cyber", title: "Intro to Cyber Security", difficulty: "easy", category: "general", duration: "1h", tasks: 8, users: "124k", description: "Your first room! Learn what cybersecurity is and why it matters.", free: true },
   { id: "linux-fundamentals", title: "Linux Fundamentals Part 1", difficulty: "easy", category: "linux", duration: "2h", tasks: 12, users: "98k", description: "Get comfortable with the Linux command line — essential for every hacker.", free: true },
   { id: "networking-nmap", title: "Intro to Networking", difficulty: "easy", category: "network", duration: "1.5h", tasks: 10, users: "76k", description: "Understand how devices communicate and how attackers scan networks.", free: true },
@@ -15,13 +15,37 @@ const ROOMS = [
   { id: "priv-esc-linux", title: "Linux Privilege Escalation", difficulty: "hard", category: "linux", duration: "3.5h", tasks: 17, users: "18k", description: "Escalate from a low-privilege shell to root on Linux systems.", free: false },
 ];
 
-onHZDReady(() => {
-
+onHZDReady(async () => {
   const grid = document.getElementById("roomsGrid");
   const searchInput = document.getElementById("roomsSearch");
   const filterBtns = document.querySelectorAll("#roomFilters .filter-btn");
   let activeFilter = "all";
   let searchQuery = "";
+  let rooms = [...STATIC_ROOMS];
+
+  try {
+    const response = await fetch("/api/content/rooms");
+    if (response.ok) {
+      const data = await response.json();
+      if (data.rooms?.length) {
+        const apiRooms = data.rooms.map((room) => ({
+          id: room.slug,
+          title: room.title,
+          difficulty: room.difficulty,
+          category: "general",
+          duration: room.duration,
+          tasks: room.tasksCount || 0,
+          users: room.module?.title ? room.module.title : "CMS",
+          description: room.description,
+          free: true,
+          fromApi: true
+        }));
+        rooms = [...apiRooms, ...STATIC_ROOMS.filter((r) => !apiRooms.some((a) => a.id === r.id))];
+      }
+    }
+  } catch {
+    /* keep static fallback */
+  }
 
   function difficultyClass(d) {
     if (d === "easy") return "beginner";
@@ -31,7 +55,7 @@ onHZDReady(() => {
 
   function renderRooms() {
     if (!grid) return;
-    const filtered = ROOMS.filter((room) => {
+    const filtered = rooms.filter((room) => {
       const matchFilter = activeFilter === "all" || room.category === activeFilter;
       const q = searchQuery.toLowerCase();
       const matchSearch = !q || room.title.toLowerCase().includes(q) || room.description.toLowerCase().includes(q);
@@ -55,6 +79,7 @@ onHZDReady(() => {
         <div class="room-card-top">
           <span class="path-difficulty ${difficultyClass(room.difficulty)}">${room.difficulty}</span>
           ${room.free ? '<span class="room-free-badge">Free</span>' : '<span class="room-premium-badge">Premium</span>'}
+          ${room.fromApi ? '<span class="room-free-badge">Live</span>' : ""}
         </div>
         <h3>${HZD.escapeHtml(room.title)}</h3>
         <p>${HZD.escapeHtml(room.description)}</p>
@@ -72,13 +97,17 @@ onHZDReady(() => {
             ${room.users}
           </span>
         </div>
-        <button class="path-enroll-btn room-start-btn" data-room="${room.id}">Start Room</button>
+        <button class="path-enroll-btn room-start-btn" data-room="${room.id}" data-from-api="${room.fromApi ? "1" : "0"}">Start Room</button>
       </article>`
       )
       .join("");
 
     grid.querySelectorAll(".room-start-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
+        if (btn.dataset.fromApi === "1") {
+          window.location.href = `room.html?slug=${encodeURIComponent(btn.dataset.room)}`;
+          return;
+        }
         HZD.showToast("Room labs launching soon! We're building interactive environments.");
       });
     });

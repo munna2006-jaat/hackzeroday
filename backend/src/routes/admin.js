@@ -2,6 +2,7 @@ import express from "express";
 import { z } from "zod";
 import { prisma } from "../config/prisma.js";
 import { requireAdminOrDev } from "../middleware/auth.js";
+import { extractQuestionsFromLayout, hashQuestionAnswers } from "../utils/questions.js";
 import { slugify, uniqueSlug } from "../utils/slug.js";
 
 const router = express.Router();
@@ -385,6 +386,98 @@ router.delete("/rooms/:id", async (req, res) => {
 
   await prisma.room.delete({ where: { id: req.params.id } });
   return res.json({ message: "Room deleted." });
+});
+
+const roomContentSchema = z.object({
+  contentHtml: z.string(),
+  contentCss: z.string().optional().default(""),
+  layoutJson: z.unknown(),
+  publish: z.boolean().optional()
+});
+
+router.get("/rooms/:id/content", async (req, res) => {
+  const room = await prisma.room.findUnique({
+    where: { id: req.params.id },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      status: true,
+      contentHtml: true,
+      contentCss: true,
+      layoutJson: true,
+      questions: {
+        orderBy: { order: "asc" },
+        select: {
+          id: true,
+          blockId: true,
+          type: true,
+          prompt: true,
+          order: true,
+          hints: true,
+          optionsJson: true
+        }
+      }
+    }
+  });
+
+  if (!room) {
+    return res.status(404).json({ message: "Room not found." });
+  }
+
+  return res.json({ room });
+});
+
+router.put("/rooms/:id/content", async (req, res) => {
+  const parsed = roomContentSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.issues[0].message });
+  }
+
+  const existing = await prisma.room.findUnique({ where: { id: req.params.id } });
+  if (!existing) {
+    return res.status(404).json({ message: "Room not found." });
+  }
+
+  const { contentHtml, contentCss, layoutJson, publish } = parsed.data;
+  const extracted = extractQuestionsFromLayout(layoutJson);
+  const hashedQuestions = await hashQuestionAnswers(extracted);
+
+  const room = await prisma.$transaction(async (tx) => {
+    await tx.question.deleteMany({ where: { roomId: req.params.id } });
+
+    if (hashedQuestions.length) {
+      await tx.question.createMany({
+        data: hashedQuestions.map((q) => ({
+          roomId: req.params.id,
+          blockId: q.blockId,
+          type: q.type,
+          prompt: q.prompt,
+          answerHash: q.answerHash,
+          optionsJson: q.optionsJson,
+          hints: q.hints,
+          order: q.order
+        }))
+      });
+    }
+
+    return tx.room.update({
+      where: { id: req.params.id },
+      data: {
+        contentHtml,
+        contentCss: contentCss || "",
+        layoutJson,
+        tasksCount: hashedQuestions.length,
+        ...(publish ? { status: "PUBLISHED" } : {})
+      },
+      include: {
+        ...roomInclude,
+        questions: { orderBy: { order: "asc" } }
+      }
+    });
+  });
+
+  return res.json({ room, questionsSaved: hashedQuestions.length });
 });
 
 export default router;

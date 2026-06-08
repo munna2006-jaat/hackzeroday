@@ -1,0 +1,120 @@
+.room-page-header .room-back-link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: var(--muted, #9eb9ad);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.room-page-header .room-back-link:hover {
+  color: var(--green, #36f58f);
+}
+
+.room-meta-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.room-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(54, 245, 143, 0.12);
+  color: #36f58f;
+  border: 1px solid rgba(54, 245, 143, 0.2);
+}
+
+.room-loading,
+.room-error {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted, #9eb9ad);
+}
+
+.room-error {
+  color: #ff6b6b;
+}
+
+.room-content {
+  max-width: 820px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.room-content .hzd-question-block,
+.room-content .hzd-flag-block {
+  border: 1px solid rgba(54, 245, 143, 0.2);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem;
+  margin: 1.25rem 0;
+  background: rgba(14, 24, 20, 0.6);
+}
+
+.room-content .hzd-q-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #36f58f;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.room-content .hzd-q-prompt {
+  margin: 0 0 0.85rem;
+}
+
+.room-content .hzd-answer-input,
+.room-content .hzd-answer-select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(151, 255, 194, 0.2);
+  background: rgba(7, 9, 7, 0.65);
+  color: #f3fff8;
+  font: inherit;
+}
+
+.room-content .hzd-answer-input.mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.room-content .hzd-submit-btn {
+  margin-top: 0.65rem;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #36f58f, #1ed97a);
+  color: #04140c;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.room-content .hzd-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.room-content .hzd-feedback {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.room-content .hzd-feedback.correct {
+  color: #36f58f;
+}
+
+.room-content .hzd-feedback.wrong {
+  color: #ff6b6b;
+}
+
+.room-content .hzd-solved-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: #36f58f;
+}

@@ -23,6 +23,12 @@ enum ContentStatus {
   PUBLISHED
 }
 
+enum QuestionType {
+  TEXT
+  FLAG
+  MCQ
+}
+
 model LearningPath {
   id          String         @id @default(cuid())
   title       String
@@ -79,13 +85,33 @@ model Room {
   moduleId    String
   status      ContentStatus @default(DRAFT)
   contentHtml String?       @db.Text
+  contentCss  String?       @db.Text
   layoutJson  Json?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   module      Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  questions   Question[]
 
   @@index([moduleId, order])
   @@index([status])
+}
+
+model Question {
+  id          String       @id @default(cuid())
+  roomId      String
+  blockId     String
+  type        QuestionType
+  prompt      String
+  answerHash  String?
+  optionsJson Json?
+  hints       String[]     @default([])
+  order       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  room        Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, blockId])
+  @@index([roomId, order])
 }
 
 model User {

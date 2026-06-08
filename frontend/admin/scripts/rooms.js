@@ -54,7 +54,7 @@ function renderRoomsTable() {
         <td>${Admin.badgeStatus(room.status)}</td>
         <td>
           <div class="table-actions">
-            <button type="button" class="btn btn-ghost btn-sm" data-content-placeholder="${room.id}">Edit Content</button>
+            <a href="editor.html?roomId=${room.id}" class="btn btn-ghost btn-sm">Edit Content</a>
             <button type="button" class="btn btn-ghost btn-sm" data-edit-room="${room.id}">Edit</button>
             <button type="button" class="btn btn-danger btn-sm" data-delete-room="${room.id}">Delete</button>
           </div>
@@ -71,11 +71,6 @@ function renderRoomsTable() {
     btn.addEventListener("click", () => deleteRoom(btn.dataset.deleteRoom));
   });
 
-  roomsTableBody.querySelectorAll("[data-content-placeholder]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      Admin.showToast("Content editor coming in Phase 2 (GrapesJS).");
-    });
-  });
 }
 
 function startEditRoom(id) {

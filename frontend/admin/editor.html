@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room Editor | HackZeroDay Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" />
+    <link rel="stylesheet" href="styles/admin.css" />
+    <link rel="stylesheet" href="styles/editor.css" />
+  </head>
+  <body class="admin-body editor-body">
+    <div id="devKeyBanner" class="dev-key-banner visible editor-dev-banner"></div>
+
+    <header class="editor-toolbar">
+      <div class="editor-toolbar-left">
+        <a href="rooms.html" class="btn btn-ghost btn-sm">← Rooms</a>
+        <div class="editor-room-meta">
+          <h1 id="editorRoomTitle">Room Editor</h1>
+          <p id="editorRoomSlug"></p>
+        </div>
+      </div>
+      <div class="editor-toolbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="toggleDeviceBtn" title="Toggle mobile preview">📱 Mobile</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="previewBtn">Preview</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="saveDraftBtn">Save Draft</button>
+        <button type="button" class="btn btn-primary btn-sm" id="publishBtn">Publish</button>
+      </div>
+    </header>
+
+    <div id="editorStatus" class="editor-status" hidden></div>
+    <div id="gjs" class="gjs-editor-wrap"></div>
+
+    <script src="scripts/admin.js"></script>
+    <script src="https://unpkg.com/grapesjs"></script>
+    <script src="https://unpkg.com/grapesjs-blocks-basic"></script>
+    <script src="scripts/editor.js"></script>
+  </body>
+</html>

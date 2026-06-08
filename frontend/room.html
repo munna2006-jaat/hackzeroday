@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room | HackZeroDay Labs</title>
+    <meta name="description" content="Hands-on cybersecurity room on HackZeroDay." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+    <link rel="stylesheet" href="styles/room.css" />
+  </head>
+  <body class="dashboard-body" data-page="rooms">
+    <div id="dash-navbar"></div>
+
+    <div class="dashboard-main room-page">
+      <header class="page-header room-page-header">
+        <div class="page-header-text">
+          <a href="rooms.html" class="room-back-link">← All Rooms</a>
+          <h1 id="roomTitle">Loading room...</h1>
+          <p id="roomDescription"></p>
+          <div class="room-meta-badges" id="roomMeta"></div>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section class="content-section">
+          <div id="roomLoading" class="room-loading">Loading room content...</div>
+          <div id="roomError" class="room-error" hidden></div>
+          <article id="roomContent" class="room-content" hidden></article>
+        </section>
+      </main>
+    </div>
+
+    <style id="roomCustomCss"></style>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/room.js"></script>
+  </body>
+</html>
