@@ -2,7 +2,7 @@ import express from "express";
 import { z } from "zod";
 import { prisma } from "../config/prisma.js";
 import { requireAdminOrDev } from "../middleware/auth.js";
-import { extractQuestionsFromLayout, hashQuestionAnswers } from "../utils/questions.js";
+import { hashQuestionAnswers, normalizeQuestionInput } from "../utils/questions.js";
 import { slugify, uniqueSlug } from "../utils/slug.js";
 
 const router = express.Router();
@@ -26,6 +26,7 @@ const moduleSchema = z.object({
   title: z.string().trim().min(1).max(160),
   slug: z.string().trim().max(160).optional(),
   description: z.string().trim().max(4000).optional(),
+  coverImage: z.string().trim().max(500).optional().nullable(),
   order: z.coerce.number().int().min(0).optional()
 });
 
@@ -38,9 +39,27 @@ const roomSchema = z.object({
   tasksCount: z.coerce.number().int().min(0).optional(),
   order: z.coerce.number().int().min(0).optional(),
   moduleId: z.string().min(1),
-  status: contentStatusSchema.optional(),
-  contentHtml: z.string().optional().nullable(),
-  layoutJson: z.unknown().optional().nullable()
+  status: contentStatusSchema.optional()
+});
+
+const questionInputSchema = z.object({
+  id: z.string().optional(),
+  blockId: z.string().trim().max(120).optional(),
+  type: z.enum(["TEXT", "FLAG", "MCQ"]).default("TEXT"),
+  prompt: z.string().trim().min(1).max(1000),
+  answer: z.string().trim().max(1000).optional(),
+  options: z.union([z.array(z.string()), z.string()]).optional(),
+  hints: z.union([z.array(z.string()), z.string()]).optional(),
+  order: z.coerce.number().int().min(0).optional()
+});
+
+const taskSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().trim().min(1).max(160),
+  contentHtml: z.string().optional().default(""),
+  imageUrl: z.string().trim().max(500).optional().nullable(),
+  order: z.coerce.number().int().min(0).optional(),
+  questions: z.array(questionInputSchema).optional().default([])
 });
 
 const assignModuleSchema = z.object({
@@ -252,7 +271,7 @@ router.post("/modules", async (req, res) => {
     return res.status(400).json({ message: parsed.error.issues[0].message });
   }
 
-  const { title, slug, description, order } = parsed.data;
+  const { title, slug, description, coverImage, order } = parsed.data;
   const finalSlug = await uniqueSlug(prisma, "module", slug || slugify(title));
 
   const mod = await prisma.module.create({
@@ -260,6 +279,7 @@ router.post("/modules", async (req, res) => {
       title,
       slug: finalSlug,
       description: description || "",
+      coverImage: coverImage || null,
       order: order ?? 0
     },
     include: moduleInclude
@@ -306,7 +326,10 @@ router.delete("/modules/:id", async (req, res) => {
 router.get("/rooms", async (req, res) => {
   const rooms = await prisma.room.findMany({
     orderBy: [{ moduleId: "asc" }, { order: "asc" }, { createdAt: "asc" }],
-    include: roomInclude
+    include: {
+      ...roomInclude,
+      _count: { select: { tasks: true } }
+    }
   });
   return res.json({ rooms });
 });
@@ -322,8 +345,7 @@ router.post("/rooms", async (req, res) => {
     return res.status(404).json({ message: "Module not found." });
   }
 
-  const { title, slug, description, difficulty, duration, tasksCount, order, moduleId, status, contentHtml, layoutJson } =
-    parsed.data;
+  const { title, slug, description, difficulty, duration, tasksCount, order, moduleId, status } = parsed.data;
   const finalSlug = await uniqueSlug(prisma, "room", slug || slugify(title));
 
   const room = await prisma.room.create({
@@ -336,9 +358,7 @@ router.post("/rooms", async (req, res) => {
       tasksCount: tasksCount ?? 0,
       order: order ?? 0,
       moduleId,
-      status: status || "DRAFT",
-      contentHtml: contentHtml ?? null,
-      layoutJson: layoutJson ?? null
+      status: status || "DRAFT"
     },
     include: roomInclude
   });
@@ -389,34 +409,100 @@ router.delete("/rooms/:id", async (req, res) => {
 });
 
 const roomContentSchema = z.object({
-  contentHtml: z.string(),
-  contentCss: z.string().optional().default(""),
-  layoutJson: z.unknown(),
+  tasks: z.array(taskSchema).optional().default([]),
   publish: z.boolean().optional()
 });
+
+const taskInclude = {
+  questions: {
+    orderBy: { order: "asc" },
+    select: {
+      id: true,
+      blockId: true,
+      type: true,
+      prompt: true,
+      order: true,
+      hints: true,
+      optionsJson: true
+    }
+  }
+};
+
+function serializeTask(task) {
+  return {
+    ...task,
+    questions: (task.questions || []).map((q) => ({
+      id: q.id,
+      blockId: q.blockId,
+      type: q.type,
+      prompt: q.prompt,
+      order: q.order,
+      hints: q.hints,
+      options: q.type === "MCQ" && q.optionsJson?.options ? q.optionsJson.options : []
+    }))
+  };
+}
+
+async function replaceTaskQuestions(tx, taskId, questions) {
+  const normalized = normalizeQuestionInput(questions);
+  const hashedQuestions = await hashQuestionAnswers(normalized);
+  const existingQuestions = await tx.question.findMany({ where: { taskId } });
+  const existingById = new Map(existingQuestions.map((q) => [q.id, q]));
+  const keepIds = [];
+
+  for (const q of hashedQuestions) {
+    const existing = q.id ? existingById.get(q.id) : null;
+    const answerHash = q.answerHash || existing?.answerHash;
+    if (!answerHash) continue;
+
+    if (existing) {
+      await tx.question.update({
+        where: { id: existing.id },
+        data: {
+          blockId: q.blockId,
+          type: q.type,
+          prompt: q.prompt,
+          answerHash,
+          optionsJson: q.optionsJson,
+          hints: q.hints,
+          order: q.order
+        }
+      });
+      keepIds.push(existing.id);
+    } else {
+      const created = await tx.question.create({
+        data: {
+          taskId,
+          blockId: q.blockId,
+          type: q.type,
+          prompt: q.prompt,
+          answerHash,
+          optionsJson: q.optionsJson,
+          hints: q.hints,
+          order: q.order
+        }
+      });
+      keepIds.push(created.id);
+    }
+  }
+
+  await tx.question.deleteMany({
+    where: {
+      taskId,
+      id: { notIn: keepIds }
+    }
+  });
+
+  return keepIds.length;
+}
 
 router.get("/rooms/:id/content", async (req, res) => {
   const room = await prisma.room.findUnique({
     where: { id: req.params.id },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      status: true,
-      contentHtml: true,
-      contentCss: true,
-      layoutJson: true,
-      questions: {
+    include: {
+      tasks: {
         orderBy: { order: "asc" },
-        select: {
-          id: true,
-          blockId: true,
-          type: true,
-          prompt: true,
-          order: true,
-          hints: true,
-          optionsJson: true
-        }
+        include: taskInclude
       }
     }
   });
@@ -425,7 +511,7 @@ router.get("/rooms/:id/content", async (req, res) => {
     return res.status(404).json({ message: "Room not found." });
   }
 
-  return res.json({ room });
+  return res.json({ room: { ...room, tasks: room.tasks.map(serializeTask) } });
 });
 
 router.put("/rooms/:id/content", async (req, res) => {
@@ -439,45 +525,135 @@ router.put("/rooms/:id/content", async (req, res) => {
     return res.status(404).json({ message: "Room not found." });
   }
 
-  const { contentHtml, contentCss, layoutJson, publish } = parsed.data;
-  const extracted = extractQuestionsFromLayout(layoutJson);
-  const hashedQuestions = await hashQuestionAnswers(extracted);
+  const { tasks, publish } = parsed.data;
 
   const room = await prisma.$transaction(async (tx) => {
-    await tx.question.deleteMany({ where: { roomId: req.params.id } });
+    let questionsSaved = 0;
+    const existingTasks = await tx.task.findMany({ where: { roomId: req.params.id } });
+    const validExistingIds = new Set(existingTasks.map((task) => task.id));
+    const keepTaskIds = [];
 
-    if (hashedQuestions.length) {
-      await tx.question.createMany({
-        data: hashedQuestions.map((q) => ({
-          roomId: req.params.id,
-          blockId: q.blockId,
-          type: q.type,
-          prompt: q.prompt,
-          answerHash: q.answerHash,
-          optionsJson: q.optionsJson,
-          hints: q.hints,
-          order: q.order
-        }))
-      });
+    for (const [index, taskInput] of tasks.entries()) {
+      const taskData = {
+        title: taskInput.title,
+        contentHtml: taskInput.contentHtml || "",
+        imageUrl: taskInput.imageUrl || null,
+        order: taskInput.order ?? index
+      };
+      const task =
+        taskInput.id && validExistingIds.has(taskInput.id)
+          ? await tx.task.update({ where: { id: taskInput.id }, data: taskData })
+          : await tx.task.create({ data: { ...taskData, roomId: req.params.id } });
+      keepTaskIds.push(task.id);
+      questionsSaved += await replaceTaskQuestions(tx, task.id, taskInput.questions);
     }
 
-    return tx.room.update({
+    await tx.task.deleteMany({
+      where: {
+        roomId: req.params.id,
+        id: { notIn: keepTaskIds }
+      }
+    });
+
+    const updated = await tx.room.update({
       where: { id: req.params.id },
       data: {
-        contentHtml,
-        contentCss: contentCss || "",
-        layoutJson,
-        tasksCount: hashedQuestions.length,
+        tasksCount: tasks.length,
         ...(publish ? { status: "PUBLISHED" } : {})
       },
       include: {
         ...roomInclude,
-        questions: { orderBy: { order: "asc" } }
+        tasks: {
+          orderBy: { order: "asc" },
+          include: taskInclude
+        }
       }
+    });
+
+    return { room: updated, questionsSaved };
+  });
+
+  return res.json({
+    room: { ...room.room, tasks: room.room.tasks.map(serializeTask) },
+    questionsSaved: room.questionsSaved
+  });
+});
+
+router.post("/rooms/:id/tasks", async (req, res) => {
+  const parsed = taskSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.issues[0].message });
+  }
+
+  const room = await prisma.room.findUnique({ where: { id: req.params.id } });
+  if (!room) {
+    return res.status(404).json({ message: "Room not found." });
+  }
+
+  const task = await prisma.$transaction(async (tx) => {
+    const created = await tx.task.create({
+      data: {
+        roomId: req.params.id,
+        title: parsed.data.title,
+        contentHtml: parsed.data.contentHtml || "",
+        imageUrl: parsed.data.imageUrl || null,
+        order: parsed.data.order ?? 0
+      }
+    });
+    await replaceTaskQuestions(tx, created.id, parsed.data.questions);
+    await tx.room.update({
+      where: { id: req.params.id },
+      data: { tasksCount: await tx.task.count({ where: { roomId: req.params.id } }) }
+    });
+    return tx.task.findUnique({ where: { id: created.id }, include: taskInclude });
+  });
+
+  return res.status(201).json({ task: serializeTask(task) });
+});
+
+router.put("/tasks/:taskId", async (req, res) => {
+  const parsed = taskSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.issues[0].message });
+  }
+
+  const existing = await prisma.task.findUnique({ where: { id: req.params.taskId } });
+  if (!existing) {
+    return res.status(404).json({ message: "Task not found." });
+  }
+
+  const task = await prisma.$transaction(async (tx) => {
+    await tx.task.update({
+      where: { id: req.params.taskId },
+      data: {
+        title: parsed.data.title,
+        contentHtml: parsed.data.contentHtml || "",
+        imageUrl: parsed.data.imageUrl || null,
+        order: parsed.data.order ?? existing.order
+      }
+    });
+    await replaceTaskQuestions(tx, req.params.taskId, parsed.data.questions);
+    return tx.task.findUnique({ where: { id: req.params.taskId }, include: taskInclude });
+  });
+
+  return res.json({ task: serializeTask(task) });
+});
+
+router.delete("/tasks/:taskId", async (req, res) => {
+  const existing = await prisma.task.findUnique({ where: { id: req.params.taskId } });
+  if (!existing) {
+    return res.status(404).json({ message: "Task not found." });
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.task.delete({ where: { id: req.params.taskId } });
+    await tx.room.update({
+      where: { id: existing.roomId },
+      data: { tasksCount: await tx.task.count({ where: { roomId: existing.roomId } }) }
     });
   });
 
-  return res.json({ room, questionsSaved: hashedQuestions.length });
+  return res.json({ message: "Task deleted." });
 });
 
 export default router;

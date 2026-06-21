@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Room Editor | HackZeroDay Admin</title>
+    <title>Task Editor | HackZeroDay Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" />
     <link rel="stylesheet" href="styles/admin.css" />
     <link rel="stylesheet" href="styles/editor.css" />
   </head>
@@ -16,26 +15,76 @@
 
     <header class="editor-toolbar">
       <div class="editor-toolbar-left">
-        <a href="rooms.html" class="btn btn-ghost btn-sm">← Rooms</a>
+        <a href="rooms.html" class="btn btn-ghost btn-sm">Back to Rooms</a>
         <div class="editor-room-meta">
-          <h1 id="editorRoomTitle">Room Editor</h1>
+          <h1 id="editorRoomTitle">Task Editor</h1>
           <p id="editorRoomSlug"></p>
         </div>
       </div>
       <div class="editor-toolbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="toggleDeviceBtn" title="Toggle mobile preview">📱 Mobile</button>
-        <button type="button" class="btn btn-secondary btn-sm" id="previewBtn">Preview</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="addTaskBtn">Add Task</button>
         <button type="button" class="btn btn-ghost btn-sm" id="saveDraftBtn">Save Draft</button>
         <button type="button" class="btn btn-primary btn-sm" id="publishBtn">Publish</button>
       </div>
     </header>
 
     <div id="editorStatus" class="editor-status" hidden></div>
-    <div id="gjs" class="gjs-editor-wrap"></div>
+
+    <main class="task-editor-shell">
+      <aside class="task-list-panel">
+        <div class="task-list-head">
+          <h2>Tasks</h2>
+          <span id="taskCount">0</span>
+        </div>
+        <div id="taskList" class="task-list"></div>
+      </aside>
+
+      <section class="task-workspace">
+        <form id="taskForm" class="task-form" hidden>
+          <input type="hidden" id="taskId" />
+          <div class="task-form-grid">
+            <div class="form-row">
+              <label for="taskTitle">Task title</label>
+              <input id="taskTitle" required maxlength="160" placeholder="e.g. What is HTTP?" />
+            </div>
+            <div class="form-row">
+              <label for="taskOrder">Order</label>
+              <input id="taskOrder" type="number" min="0" value="0" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="taskImageUrl">Image URL</label>
+            <input id="taskImageUrl" maxlength="500" placeholder="Optional image for this task" />
+          </div>
+          <div class="form-row">
+            <label for="taskContentHtml">Lesson content</label>
+            <textarea id="taskContentHtml" rows="10" placeholder="<p>Teach the concept here...</p>"></textarea>
+          </div>
+
+          <div class="question-head">
+            <div>
+              <h3>Questions</h3>
+              <p>Answers are hashed on save and never sent back to the browser.</p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="addQuestionBtn">Add Question</button>
+          </div>
+          <div id="questionsList" class="questions-list"></div>
+
+          <div class="editor-footer-actions">
+            <button type="submit" class="btn btn-primary">Apply Task Changes</button>
+            <button type="button" class="btn btn-danger" id="deleteTaskBtn">Delete Task</button>
+          </div>
+        </form>
+
+        <div id="emptyEditorState" class="empty-editor-state">
+          <h2>No task selected</h2>
+          <p>Create a task to start building this room.</p>
+          <button type="button" class="btn btn-primary" id="emptyAddTaskBtn">Add First Task</button>
+        </div>
+      </section>
+    </main>
 
     <script src="scripts/admin.js"></script>
-    <script src="https://unpkg.com/grapesjs"></script>
-    <script src="https://unpkg.com/grapesjs-blocks-basic"></script>
     <script src="scripts/editor.js"></script>
   </body>
 </html>

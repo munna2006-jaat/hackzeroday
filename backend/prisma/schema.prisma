@@ -51,6 +51,7 @@ model Module {
   title       String
   slug        String       @unique
   description String       @default("")
+  coverImage  String?
   order       Int          @default(0)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -84,21 +85,33 @@ model Room {
   order       Int           @default(0)
   moduleId    String
   status      ContentStatus @default(DRAFT)
-  contentHtml String?       @db.Text
-  contentCss  String?       @db.Text
-  layoutJson  Json?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   module      Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  questions   Question[]
+  tasks       Task[]
 
   @@index([moduleId, order])
   @@index([status])
 }
 
+model Task {
+  id          String     @id @default(cuid())
+  roomId      String
+  title       String
+  contentHtml String     @default("") @db.Text
+  imageUrl    String?
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  room        Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  questions   Question[]
+
+  @@index([roomId, order])
+}
+
 model Question {
   id          String       @id @default(cuid())
-  roomId      String
+  taskId      String
   blockId     String
   type        QuestionType
   prompt      String
@@ -108,10 +121,10 @@ model Question {
   order       Int          @default(0)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  room        Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  task        Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  @@unique([roomId, blockId])
-  @@index([roomId, order])
+  @@unique([taskId, blockId])
+  @@index([taskId, order])
 }
 
 model User {

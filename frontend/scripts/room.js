@@ -1,4 +1,4 @@
-/* room.js - Published room viewer with interactive questions */
+/* room.js - Published task-based room viewer */
 
 onHZDReady(async () => {
   const params = new URLSearchParams(window.location.search);
@@ -10,7 +10,6 @@ onHZDReady(async () => {
   const loadingEl = document.getElementById("roomLoading");
   const errorEl = document.getElementById("roomError");
   const contentEl = document.getElementById("roomContent");
-  const cssEl = document.getElementById("roomCustomCss");
 
   if (!slug) {
     loadingEl.hidden = true;
@@ -20,7 +19,6 @@ onHZDReady(async () => {
   }
 
   let room = null;
-
   try {
     const response = await fetch(`/api/content/rooms/${encodeURIComponent(slug)}`);
     const data = await response.json();
@@ -39,87 +37,73 @@ onHZDReady(async () => {
   metaEl.innerHTML = `
     <span class="room-badge">${HZD.escapeHtml(room.difficulty)}</span>
     <span class="room-badge">${HZD.escapeHtml(room.duration)}</span>
-    <span class="room-badge">${room.tasksCount || 0} tasks</span>`;
+    <span class="room-badge">${room.tasksCount || room.tasks?.length || 0} tasks</span>`;
 
-  cssEl.textContent = room.contentCss || "";
-  contentEl.innerHTML = room.contentHtml || "<p>This room has no content yet.</p>";
-
+  renderTasks(room, contentEl);
   loadingEl.hidden = true;
   contentEl.hidden = false;
-
-  activateQuestionWidgets(room);
 });
 
-function findQuestion(room, blockEl) {
-  const blockId = blockEl.id || blockEl.getAttribute("id");
-  if (blockId) {
-    const byBlock = room.questions.find((q) => q.blockId === blockId);
-    if (byBlock) return byBlock;
+function renderTasks(room, contentEl) {
+  const tasks = room.tasks || [];
+  if (!tasks.length) {
+    contentEl.innerHTML = `<p>This room has no tasks yet.</p>`;
+    return;
   }
-  const promptEl = blockEl.querySelector(".hzd-q-prompt");
-  const promptText = promptEl?.textContent?.trim();
-  if (promptText) {
-    return room.questions.find((q) => q.prompt === promptText);
-  }
-  return null;
+
+  contentEl.innerHTML = tasks
+    .map(
+      (task, index) => `
+        <section class="room-task" data-task-id="${task.id}">
+          <div class="room-task-kicker">Task ${index + 1}</div>
+          <h2>${HZD.escapeHtml(task.title)}</h2>
+          ${task.imageUrl ? `<img class="room-task-image" src="${HZD.escapeHtml(task.imageUrl)}" alt="" />` : ""}
+          <div class="room-task-content">${task.contentHtml || ""}</div>
+          <div class="room-task-questions">
+            ${(task.questions || []).map((question) => questionMarkup(room, task, question)).join("")}
+          </div>
+        </section>`
+    )
+    .join("");
+
+  activateQuestionWidgets(room);
+}
+
+function questionMarkup(room, task, question) {
+  const isFlag = question.type === "FLAG";
+  const solved = localStorage.getItem(storageKey(room, question)) === "solved";
+  const input =
+    question.type === "MCQ" && question.options?.length
+      ? `<select class="hzd-answer-select" ${solved ? "disabled" : ""}>
+          <option value="">Select an answer...</option>
+          ${question.options.map((opt) => `<option value="${HZD.escapeHtml(opt)}">${HZD.escapeHtml(opt)}</option>`).join("")}
+        </select>`
+      : `<input type="text" class="hzd-answer-input${isFlag ? " mono" : ""}" placeholder="${isFlag ? "HZD{your_flag}" : "Your answer..."}" ${solved ? "disabled" : ""} />`;
+
+  return `
+    <article class="hzd-question-block" data-task-id="${task.id}" data-question-id="${question.id}" data-block-id="${HZD.escapeHtml(question.blockId)}">
+      <div class="hzd-q-label">${isFlag ? "Flag Challenge" : question.type === "MCQ" ? "Multiple Choice" : "Question"}</div>
+      <p class="hzd-q-prompt">${HZD.escapeHtml(question.prompt)}</p>
+      ${input}
+      <button type="button" class="hzd-submit-btn" ${solved ? "disabled" : ""}>${isFlag ? "Submit Flag" : "Submit Answer"}</button>
+      <div class="hzd-feedback${solved ? " correct" : ""}" ${solved ? "" : "hidden"}>${solved ? "Solved" : ""}</div>
+    </article>`;
+}
+
+function storageKey(room, question) {
+  return `hzd_room_${room.slug}_q_${question.id}`;
 }
 
 function activateQuestionWidgets(room) {
-  const blocks = document.querySelectorAll(".hzd-question-block, .hzd-flag-block");
-
-  blocks.forEach((block, index) => {
-    const question = findQuestion(room, block);
+  document.querySelectorAll(".hzd-question-block").forEach((block) => {
+    const questionId = block.dataset.questionId;
+    const blockId = block.dataset.blockId;
+    const question = (room.tasks || []).flatMap((task) => task.questions || []).find((q) => q.id === questionId);
     if (!question) return;
 
-    const isFlag = block.classList.contains("hzd-flag-block") || question.type === "FLAG";
-    const promptEl = block.querySelector(".hzd-q-prompt");
-    if (promptEl) promptEl.textContent = question.prompt;
-
-    let inputEl = block.querySelector("input, select");
-    const oldBtn = block.querySelector(".hzd-submit-btn");
-    if (oldBtn) oldBtn.remove();
-    if (inputEl) inputEl.remove();
-
-    if (question.type === "MCQ" && question.options?.length) {
-      inputEl = document.createElement("select");
-      inputEl.className = "hzd-answer-select";
-      inputEl.innerHTML =
-        `<option value="">Select an answer...</option>` +
-        question.options.map((opt) => `<option value="${HZD.escapeHtml(opt)}">${HZD.escapeHtml(opt)}</option>`).join("");
-    } else {
-      inputEl = document.createElement("input");
-      inputEl.type = "text";
-      inputEl.className = `hzd-answer-input${isFlag ? " mono" : ""}`;
-      inputEl.placeholder = isFlag ? "HZD{your_flag}" : "Your answer...";
-    }
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "hzd-submit-btn";
-    btn.textContent = isFlag ? "Submit Flag" : "Submit Answer";
-
-    const feedback = document.createElement("div");
-    feedback.className = "hzd-feedback";
-    feedback.hidden = true;
-
-    block.appendChild(inputEl);
-    block.appendChild(btn);
-    block.appendChild(feedback);
-
-    if (!block.id && question.blockId) {
-      block.id = question.blockId;
-    }
-
-    const storageKey = `hzd_room_${room.slug}_q_${question.id}`;
-
-    if (localStorage.getItem(storageKey) === "solved") {
-      inputEl.disabled = true;
-      btn.disabled = true;
-      feedback.hidden = false;
-      feedback.className = "hzd-feedback correct";
-      feedback.textContent = "✓ Solved";
-      return;
-    }
+    const inputEl = block.querySelector("input, select");
+    const btn = block.querySelector(".hzd-submit-btn");
+    const feedback = block.querySelector(".hzd-feedback");
 
     async function submit() {
       const answer = inputEl.value.trim();
@@ -133,7 +117,7 @@ function activateQuestionWidgets(room) {
         const response = await fetch(`/api/content/rooms/${encodeURIComponent(room.slug)}/submit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionId: question.id, blockId: question.blockId, answer })
+          body: JSON.stringify({ questionId, blockId, answer })
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Submit failed");
@@ -142,7 +126,7 @@ function activateQuestionWidgets(room) {
         if (data.correct) {
           feedback.className = "hzd-feedback correct";
           feedback.textContent = data.message || "Correct!";
-          localStorage.setItem(storageKey, "solved");
+          localStorage.setItem(storageKey(room, question), "solved");
           inputEl.disabled = true;
           HZD.showToast("Correct answer!", "success");
         } else {
@@ -157,8 +141,8 @@ function activateQuestionWidgets(room) {
     }
 
     btn.addEventListener("click", submit);
-    inputEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") submit();
+    inputEl.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") submit();
     });
   });
 }

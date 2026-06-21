@@ -1,73 +1,57 @@
-/* rooms.js - Rooms browse page */
-
-const STATIC_ROOMS = [
-  { id: "intro-to-cyber", title: "Intro to Cyber Security", difficulty: "easy", category: "general", duration: "1h", tasks: 8, users: "124k", description: "Your first room! Learn what cybersecurity is and why it matters.", free: true },
-  { id: "linux-fundamentals", title: "Linux Fundamentals Part 1", difficulty: "easy", category: "linux", duration: "2h", tasks: 12, users: "98k", description: "Get comfortable with the Linux command line — essential for every hacker.", free: true },
-  { id: "networking-nmap", title: "Intro to Networking", difficulty: "easy", category: "network", duration: "1.5h", tasks: 10, users: "76k", description: "Understand how devices communicate and how attackers scan networks.", free: true },
-  { id: "web-fundamentals", title: "Web Fundamentals", difficulty: "easy", category: "web", duration: "2h", tasks: 14, users: "65k", description: "Learn how websites work — HTTP, DNS, and the building blocks of the web.", free: true },
-  { id: "owasp-top10", title: "OWASP Top 10", difficulty: "medium", category: "web", duration: "3h", tasks: 18, users: "42k", description: "Explore the most critical web application security risks.", free: false },
-  { id: "burp-suite", title: "Burp Suite Basics", difficulty: "medium", category: "web", duration: "2.5h", tasks: 15, users: "38k", description: "Master the industry-standard web proxy for finding vulnerabilities.", free: false },
-  { id: "sql-injection", title: "SQL Injection", difficulty: "medium", category: "web", duration: "2h", tasks: 12, users: "55k", description: "Learn to find and exploit SQL injection flaws in web applications.", free: false },
-  { id: "metasploit", title: "Metasploit Intro", difficulty: "medium", category: "offensive", duration: "3h", tasks: 16, users: "31k", description: "Get started with the world's most popular exploitation framework.", free: false },
-  { id: "active-directory", title: "Active Directory Basics", difficulty: "hard", category: "offensive", duration: "4h", tasks: 20, users: "22k", description: "Understand AD structure and common attack paths in enterprise networks.", free: false },
-  { id: "wireshark", title: "Wireshark: The Basics", difficulty: "easy", category: "network", duration: "1.5h", tasks: 9, users: "48k", description: "Capture and analyze network traffic like a SOC analyst.", free: true },
-  { id: "cryptography", title: "Cryptography for Hackers", difficulty: "medium", category: "general", duration: "2h", tasks: 11, users: "29k", description: "Decode ciphers, crack hashes, and understand encryption fundamentals.", free: false },
-  { id: "priv-esc-linux", title: "Linux Privilege Escalation", difficulty: "hard", category: "linux", duration: "3.5h", tasks: 17, users: "18k", description: "Escalate from a low-privilege shell to root on Linux systems.", free: false },
-];
+/* rooms.js - API-backed rooms browse page */
 
 onHZDReady(async () => {
   const grid = document.getElementById("roomsGrid");
   const searchInput = document.getElementById("roomsSearch");
-  const filterBtns = document.querySelectorAll("#roomFilters .filter-btn");
+  const filters = document.getElementById("roomFilters");
   let activeFilter = "all";
   let searchQuery = "";
-  let rooms = [...STATIC_ROOMS];
+  let rooms = [];
 
-  try {
-    const response = await fetch("/api/content/rooms");
-    if (response.ok) {
-      const data = await response.json();
-      if (data.rooms?.length) {
-        const apiRooms = data.rooms.map((room) => ({
-          id: room.slug,
-          title: room.title,
-          difficulty: room.difficulty,
-          category: "general",
-          duration: room.duration,
-          tasks: room.tasksCount || 0,
-          users: room.module?.title ? room.module.title : "CMS",
-          description: room.description,
-          free: true,
-          fromApi: true
-        }));
-        rooms = [...apiRooms, ...STATIC_ROOMS.filter((r) => !apiRooms.some((a) => a.id === r.id))];
-      }
-    }
-  } catch {
-    /* keep static fallback */
-  }
-
-  function difficultyClass(d) {
-    if (d === "easy") return "beginner";
-    if (d === "hard") return "advanced";
+  function difficultyClass(difficulty) {
+    if (difficulty === "easy") return "beginner";
+    if (difficulty === "hard") return "advanced";
     return "intermediate";
   }
 
+  function renderFilters() {
+    const modules = [...new Set(rooms.map((room) => room.module?.slug).filter(Boolean))];
+    filters.innerHTML =
+      `<button class="filter-btn active" data-filter="all">All</button>` +
+      modules
+        .map((slug) => {
+          const room = rooms.find((item) => item.module?.slug === slug);
+          return `<button class="filter-btn" data-filter="${HZD.escapeHtml(slug)}">${HZD.escapeHtml(room.module.title)}</button>`;
+        })
+        .join("");
+
+    filters.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filters.querySelectorAll(".filter-btn").forEach((item) => item.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilter = btn.dataset.filter;
+        renderRooms();
+      });
+    });
+  }
+
   function renderRooms() {
-    if (!grid) return;
     const filtered = rooms.filter((room) => {
-      const matchFilter = activeFilter === "all" || room.category === activeFilter;
+      const matchFilter = activeFilter === "all" || room.module?.slug === activeFilter;
       const q = searchQuery.toLowerCase();
-      const matchSearch = !q || room.title.toLowerCase().includes(q) || room.description.toLowerCase().includes(q);
+      const matchSearch =
+        !q ||
+        room.title.toLowerCase().includes(q) ||
+        (room.description || "").toLowerCase().includes(q) ||
+        (room.module?.title || "").toLowerCase().includes(q);
       return matchFilter && matchSearch;
     });
 
     if (!filtered.length) {
       grid.innerHTML = `
         <div class="empty-state">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
           <h3>No rooms found</h3>
-          <p>Try a different search term or filter to discover more rooms.</p>
+          <p>${rooms.length ? "Try a different search term or module filter." : "No published rooms are available yet."}</p>
         </div>`;
       return;
     }
@@ -75,52 +59,39 @@ onHZDReady(async () => {
     grid.innerHTML = filtered
       .map(
         (room) => `
-      <article class="room-card" data-room-id="${room.id}">
+      <article class="room-card" data-room-id="${room.slug}">
         <div class="room-card-top">
-          <span class="path-difficulty ${difficultyClass(room.difficulty)}">${room.difficulty}</span>
-          ${room.free ? '<span class="room-free-badge">Free</span>' : '<span class="room-premium-badge">Premium</span>'}
-          ${room.fromApi ? '<span class="room-free-badge">Live</span>' : ""}
+          <span class="path-difficulty ${difficultyClass(room.difficulty)}">${HZD.escapeHtml(room.difficulty)}</span>
+          <span class="room-free-badge">Live</span>
         </div>
         <h3>${HZD.escapeHtml(room.title)}</h3>
-        <p>${HZD.escapeHtml(room.description)}</p>
+        <p>${HZD.escapeHtml(room.description || "Hands-on HackZeroDay room.")}</p>
         <div class="room-meta-row">
-          <span class="meta-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ${room.duration}
-          </span>
-          <span class="meta-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            ${room.tasks} Tasks
-          </span>
-          <span class="meta-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            ${room.users}
-          </span>
+          <span class="meta-item">${HZD.escapeHtml(room.duration)}</span>
+          <span class="meta-item">${room.tasksCount || room._count?.tasks || 0} Tasks</span>
+          <span class="meta-item">${HZD.escapeHtml(room.module?.title || "Module")}</span>
         </div>
-        <button class="path-enroll-btn room-start-btn" data-room="${room.id}" data-from-api="${room.fromApi ? "1" : "0"}">Start Room</button>
+        <button class="path-enroll-btn room-start-btn" data-room="${room.slug}">Start Room</button>
       </article>`
       )
       .join("");
 
     grid.querySelectorAll(".room-start-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        if (btn.dataset.fromApi === "1") {
-          window.location.href = `room.html?slug=${encodeURIComponent(btn.dataset.room)}`;
-          return;
-        }
-        HZD.showToast("Room labs launching soon! We're building interactive environments.");
+        window.location.href = `room.html?slug=${encodeURIComponent(btn.dataset.room)}`;
       });
     });
   }
 
-  filterBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      filterBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeFilter = btn.dataset.filter;
-      renderRooms();
-    });
-  });
+  try {
+    const response = await fetch("/api/content/rooms");
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Unable to load rooms");
+    rooms = data.rooms || [];
+  } catch (error) {
+    grid.innerHTML = `<div class="empty-state"><h3>Could not load rooms</h3><p>${HZD.escapeHtml(error.message)}</p></div>`;
+    return;
+  }
 
   if (searchInput) {
     searchInput.addEventListener("input", () => {
@@ -129,5 +100,6 @@ onHZDReady(async () => {
     });
   }
 
+  renderFilters();
   renderRooms();
 });

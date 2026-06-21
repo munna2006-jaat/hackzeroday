@@ -1,11 +1,18 @@
-/* GrapesJS room content editor */
-
 const params = new URLSearchParams(window.location.search);
 const roomId = params.get("roomId");
 
-let editor = null;
 let roomMeta = null;
-let isMobileView = false;
+let tasks = [];
+let selectedTaskId = null;
+
+const taskListEl = document.getElementById("taskList");
+const taskForm = document.getElementById("taskForm");
+const emptyState = document.getElementById("emptyEditorState");
+const questionsList = document.getElementById("questionsList");
+
+function uid(prefix) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
 
 function setStatus(message, isError = false) {
   const el = document.getElementById("editorStatus");
@@ -19,239 +26,247 @@ function setStatus(message, isError = false) {
   el.style.background = isError ? "rgba(255,107,107,0.08)" : "rgba(54,245,143,0.08)";
 }
 
-function questionInnerHtml(prompt, answerType) {
-  const input =
-    answerType === "mcq"
-      ? `<select disabled><option>Select an answer...</option></select>`
-      : `<input type="text" disabled placeholder="Student answer..." />`;
-  return `
-    <div class="hzd-q-label">Question · ${answerType}</div>
-    <p class="hzd-q-prompt">${Admin.escapeHtml(prompt || "Your question here")}</p>
-    ${input}
-    <button type="button" class="hzd-submit-btn" disabled style="margin-top:0.5rem;opacity:0.6">Submit</button>`;
+function selectedTask() {
+  return tasks.find((task) => task.localId === selectedTaskId);
 }
 
-function flagInnerHtml(prompt, flag) {
-  return `
-    <div class="hzd-q-label">Flag Challenge</div>
-    <p class="hzd-q-prompt">${Admin.escapeHtml(prompt || "Submit the flag")}</p>
-    <input type="text" disabled placeholder="HZD{...}" value="${Admin.escapeHtml(flag ? "" : "")}" />
-    <button type="button" class="hzd-submit-btn" disabled style="margin-top:0.5rem;opacity:0.6">Submit Flag</button>`;
+function blankQuestion(order = 0) {
+  return {
+    localId: uid("question"),
+    blockId: uid("question-block"),
+    type: "TEXT",
+    prompt: "",
+    answer: "",
+    options: [],
+    hints: [],
+    order
+  };
 }
 
-function registerCustomBlocks(ed) {
-  const dc = ed.DomComponents;
-  const bm = ed.BlockManager;
-
-  dc.addType("hzd-question", {
-    isComponent: (el) => el?.classList?.contains("hzd-question-block"),
-    model: {
-      defaults: {
-        tagName: "div",
-        attributes: {
-          class: "hzd-question-block",
-          "data-prompt": "What is the answer?",
-          "data-answer-type": "text",
-          "data-correct-answer": "",
-          "data-hints": "",
-          "data-options": ""
-        },
-        traits: [
-          { type: "text", name: "data-prompt", label: "Question" },
-          {
-            type: "select",
-            name: "data-answer-type",
-            label: "Answer Type",
-            options: [
-              { id: "text", name: "Text" },
-              { id: "flag", name: "Flag" },
-              { id: "mcq", name: "Multiple Choice" }
-            ]
-          },
-          { type: "text", name: "data-correct-answer", label: "Correct Answer" },
-          { type: "textarea", name: "data-options", label: "MCQ Options (one per line)" },
-          { type: "textarea", name: "data-hints", label: "Hints (one per line)" }
-        ],
-        components: questionInnerHtml("What is the answer?", "text")
-      },
-      init() {
-        this.on("change:attributes:data-prompt change:attributes:data-answer-type", this.refreshPreview);
-      },
-      refreshPreview() {
-        const attrs = this.getAttributes();
-        this.components(questionInnerHtml(attrs["data-prompt"], attrs["data-answer-type"] || "text"));
-      }
-    }
-  });
-
-  dc.addType("hzd-flag", {
-    isComponent: (el) => el?.classList?.contains("hzd-flag-block"),
-    model: {
-      defaults: {
-        tagName: "div",
-        attributes: {
-          class: "hzd-flag-block",
-          "data-prompt": "Find and submit the flag",
-          "data-flag": "HZD{example_flag}"
-        },
-        traits: [
-          { type: "text", name: "data-prompt", label: "Instructions" },
-          { type: "text", name: "data-flag", label: "Flag (HZD{...})" }
-        ],
-        components: flagInnerHtml("Find and submit the flag", "HZD{example_flag}")
-      },
-      init() {
-        this.on("change:attributes:data-prompt change:attributes:data-flag", this.refreshPreview);
-      },
-      refreshPreview() {
-        const attrs = this.getAttributes();
-        this.components(flagInnerHtml(attrs["data-prompt"], attrs["data-flag"]));
-      }
-    }
-  });
-
-  bm.add("text", {
-    label: "Text",
-    category: "Basic",
-    content: "<p>Write your lesson content here. Keep it beginner-friendly!</p>"
-  });
-
-  bm.add("heading", {
-    label: "Heading",
-    category: "Basic",
-    content: "<h2>Section Title</h2>"
-  });
-
-  bm.add("image", {
-    label: "Image",
-    category: "Basic",
-    content: { type: "image", attributes: { src: "https://via.placeholder.com/600x300/10251e/36f58f?text=HackZeroDay" } }
-  });
-
-  bm.add("code", {
-    label: "Code",
-    category: "Basic",
-    content:
-      '<pre style="background:#0a120e;padding:1rem;border-radius:8px;border:1px solid rgba(151,255,194,0.14);font-family:JetBrains Mono,monospace;color:#b7ff5a;"><code>$ whoami\nstudent</code></pre>'
-  });
-
-  bm.add("divider", {
-    label: "Divider",
-    category: "Basic",
-    content: '<hr style="border:none;border-top:1px solid rgba(151,255,194,0.2);margin:1.5rem 0;" />'
-  });
-
-  bm.add("spacer", {
-    label: "Spacer",
-    category: "Basic",
-    content: '<div style="height:2rem;"></div>'
-  });
-
-  bm.add("hzd-question", {
-    label: "Question",
-    category: "HackZeroDay",
-    content: { type: "hzd-question" }
-  });
-
-  bm.add("hzd-flag", {
-    label: "Flag",
-    category: "HackZeroDay",
-    content: { type: "hzd-flag" }
-  });
+function normalizeLoadedTask(task, index) {
+  return {
+    localId: task.id || uid("task"),
+    id: task.id,
+    title: task.title || `Task ${index + 1}`,
+    contentHtml: task.contentHtml || "",
+    imageUrl: task.imageUrl || "",
+    order: Number.isInteger(Number(task.order)) ? Number(task.order) : index,
+    questions: (task.questions || []).map((q, qIndex) => ({
+      localId: q.id || uid("question"),
+      id: q.id,
+      blockId: q.blockId || `question-${qIndex + 1}`,
+      type: q.type || "TEXT",
+      prompt: q.prompt || "",
+      answer: "",
+      options: q.options || [],
+      hints: q.hints || [],
+      order: Number.isInteger(Number(q.order)) ? Number(q.order) : qIndex
+    }))
+  };
 }
 
-function initEditor(room) {
-  editor = grapesjs.init({
-    container: "#gjs",
-    height: "100%",
-    width: "auto",
-    fromElement: false,
-    storageManager: false,
-    plugins: ["gjs-blocks-basic"],
-    pluginsOpts: {
-      "gjs-blocks-basic": {}
-    },
-    canvas: {
-      styles: [
-        "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap"
-      ]
-    },
-    deviceManager: {
-      devices: [
-        { name: "Desktop", width: "" },
-        { name: "Mobile", width: "375px", widthMedia: "480px" }
-      ]
-    },
-    blockManager: {
-      appendTo: undefined
-    }
-  });
+function collectFormIntoTask() {
+  const task = selectedTask();
+  if (!task || taskForm.hidden) return true;
 
-  registerCustomBlocks(editor);
-
-  if (room.layoutJson && Object.keys(room.layoutJson).length) {
-    editor.loadProjectData(room.layoutJson);
-  } else {
-    const starter = room.contentHtml || `
-      <div style="max-width:720px;margin:0 auto;padding:2rem;font-family:Inter,sans-serif;color:#f3fff8;">
-        <h1 style="color:#36f58f;">${Admin.escapeHtml(room.title)}</h1>
-        <p style="color:#9eb9ad;line-height:1.6;">${Admin.escapeHtml(room.description || "Start building your room content with blocks from the left panel.")}</p>
-      </div>`;
-    editor.setComponents(starter);
-    if (room.contentCss) {
-      editor.setStyle(room.contentCss);
-    }
+  const title = document.getElementById("taskTitle").value.trim();
+  if (!title) {
+    Admin.showToast("Task title is required.", "error");
+    return false;
   }
+
+  task.title = title;
+  task.order = Number(document.getElementById("taskOrder").value) || 0;
+  task.imageUrl = document.getElementById("taskImageUrl").value.trim();
+  task.contentHtml = document.getElementById("taskContentHtml").value;
+
+  const rows = [...questionsList.querySelectorAll(".question-card")];
+  task.questions = rows
+    .map((row, index) => {
+      const type = row.querySelector("[data-field='type']").value;
+      const prompt = row.querySelector("[data-field='prompt']").value.trim();
+      const answer = row.querySelector("[data-field='answer']").value.trim();
+      const options = row
+        .querySelector("[data-field='options']")
+        .value.split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      const hints = row
+        .querySelector("[data-field='hints']")
+        .value.split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      if (!prompt && !answer) return null;
+      return {
+        localId: row.dataset.localId || uid("question"),
+        id: row.dataset.questionId || undefined,
+        blockId: row.querySelector("[data-field='blockId']").value.trim() || `question-${index + 1}`,
+        type,
+        prompt,
+        answer,
+        options,
+        hints,
+        order: index
+      };
+    })
+    .filter(Boolean);
+
+  return true;
+}
+
+function renderTaskList() {
+  document.getElementById("taskCount").textContent = tasks.length;
+  if (!tasks.length) {
+    taskListEl.innerHTML = `<div class="task-list-empty">No tasks yet.</div>`;
+    return;
+  }
+
+  taskListEl.innerHTML = tasks
+    .sort((a, b) => a.order - b.order)
+    .map(
+      (task, index) => `
+        <button type="button" class="task-list-item${task.localId === selectedTaskId ? " active" : ""}" data-task-id="${task.localId}">
+          <span>${index + 1}</span>
+          <strong>${Admin.escapeHtml(task.title || "Untitled task")}</strong>
+          <small>${task.questions.length} question(s)</small>
+        </button>`
+    )
+    .join("");
+
+  taskListEl.querySelectorAll("[data-task-id]").forEach((btn) => {
+    btn.addEventListener("click", () => selectTask(btn.dataset.taskId));
+  });
+}
+
+function renderQuestions(task) {
+  questionsList.innerHTML = task.questions
+    .map(
+      (q, index) => `
+        <article class="question-card" data-local-id="${q.localId}" data-question-id="${q.id || ""}">
+          <div class="question-card-head">
+            <strong>Question ${index + 1}</strong>
+            <button type="button" class="btn btn-danger btn-sm" data-remove-question="${q.localId}">Remove</button>
+          </div>
+          <div class="task-form-grid">
+            <div class="form-row">
+              <label>Type</label>
+              <select data-field="type">
+                <option value="TEXT"${q.type === "TEXT" ? " selected" : ""}>Text</option>
+                <option value="FLAG"${q.type === "FLAG" ? " selected" : ""}>Flag</option>
+                <option value="MCQ"${q.type === "MCQ" ? " selected" : ""}>MCQ</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Block ID</label>
+              <input data-field="blockId" value="${Admin.escapeHtml(q.blockId || "")}" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Prompt</label>
+            <input data-field="prompt" value="${Admin.escapeHtml(q.prompt || "")}" placeholder="What should the student answer?" />
+          </div>
+          <div class="form-row">
+            <label>Answer</label>
+            <input data-field="answer" value="" placeholder="${q.id ? "Leave blank only if you will remove this question before saving" : "Correct answer"}" />
+          </div>
+          <div class="task-form-grid">
+            <div class="form-row">
+              <label>MCQ options</label>
+              <textarea data-field="options" rows="4" placeholder="One option per line">${Admin.escapeHtml((q.options || []).join("\n"))}</textarea>
+            </div>
+            <div class="form-row">
+              <label>Hints</label>
+              <textarea data-field="hints" rows="4" placeholder="One hint per line">${Admin.escapeHtml((q.hints || []).join("\n"))}</textarea>
+            </div>
+          </div>
+        </article>`
+    )
+    .join("");
+
+  questionsList.querySelectorAll("[data-remove-question]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const current = selectedTask();
+      if (!current) return;
+      current.questions = current.questions.filter((q) => q.localId !== btn.dataset.removeQuestion);
+      renderQuestions(current);
+      renderTaskList();
+    });
+  });
+}
+
+function renderTaskForm() {
+  const task = selectedTask();
+  const hasTask = Boolean(task);
+  taskForm.hidden = !hasTask;
+  emptyState.hidden = hasTask;
+  if (!task) return;
+
+  document.getElementById("taskId").value = task.id || "";
+  document.getElementById("taskTitle").value = task.title;
+  document.getElementById("taskOrder").value = task.order;
+  document.getElementById("taskImageUrl").value = task.imageUrl || "";
+  document.getElementById("taskContentHtml").value = task.contentHtml || "";
+  renderQuestions(task);
+}
+
+function selectTask(localId) {
+  if (!collectFormIntoTask()) return;
+  selectedTaskId = localId;
+  renderTaskList();
+  renderTaskForm();
+}
+
+function addTask() {
+  if (!collectFormIntoTask()) return;
+  const order = tasks.length;
+  const task = {
+    localId: uid("task"),
+    title: `Task ${order + 1}`,
+    contentHtml: "<p>Write the lesson content here.</p>",
+    imageUrl: "",
+    order,
+    questions: []
+  };
+  tasks.push(task);
+  selectedTaskId = task.localId;
+  renderTaskList();
+  renderTaskForm();
 }
 
 async function saveContent(publish = false) {
-  if (!editor || !roomId) return;
+  if (!roomId || !collectFormIntoTask()) return;
 
   const payload = {
-    contentHtml: editor.getHtml(),
-    contentCss: editor.getCss(),
-    layoutJson: editor.getProjectData(),
-    publish
+    publish,
+    tasks: tasks
+      .sort((a, b) => a.order - b.order)
+      .map((task, index) => ({
+        title: task.title,
+        id: task.id,
+        contentHtml: task.contentHtml || "",
+        imageUrl: task.imageUrl || null,
+        order: Number.isInteger(Number(task.order)) ? Number(task.order) : index,
+        questions: task.questions
+      }))
   };
 
   setStatus(publish ? "Publishing..." : "Saving draft...");
-
   try {
     const data = await Admin.api(`/api/admin/rooms/${roomId}/content`, {
       method: "PUT",
       body: JSON.stringify(payload)
     });
-    setStatus(
-      publish
-        ? `Published! ${data.questionsSaved} question(s) saved.`
-        : `Draft saved. ${data.questionsSaved} question(s) extracted.`
-    );
-    Admin.showToast(publish ? "Room published." : "Draft saved.");
     roomMeta = data.room;
+    tasks = (data.room.tasks || []).map(normalizeLoadedTask);
+    selectedTaskId = tasks[0]?.localId || null;
+    renderTaskList();
+    renderTaskForm();
+    setStatus(`${publish ? "Published" : "Draft saved"}. ${data.questionsSaved} question(s) saved.`);
+    Admin.showToast(publish ? "Room published." : "Draft saved.");
   } catch (error) {
     setStatus(error.message, true);
     Admin.showToast(error.message, "error");
   }
-}
-
-function openPreview() {
-  if (!editor || !roomId) return;
-
-  const preview = {
-    title: roomMeta?.title || "Room Preview",
-    html: editor.getHtml(),
-    css: editor.getCss()
-  };
-
-  sessionStorage.setItem(`hzd_preview_${roomId}`, JSON.stringify(preview));
-  window.open(`preview.html?roomId=${encodeURIComponent(roomId)}`, "_blank");
-}
-
-function toggleDevice() {
-  if (!editor) return;
-  isMobileView = !isMobileView;
-  editor.setDevice(isMobileView ? "Mobile" : "Desktop");
-  document.getElementById("toggleDeviceBtn").textContent = isMobileView ? "🖥 Desktop" : "📱 Mobile";
 }
 
 async function boot() {
@@ -275,19 +290,44 @@ async function boot() {
   try {
     const { room } = await Admin.api(`/api/admin/rooms/${roomId}/content`);
     roomMeta = room;
+    tasks = (room.tasks || []).map(normalizeLoadedTask);
+    selectedTaskId = tasks[0]?.localId || null;
     document.getElementById("editorRoomTitle").textContent = room.title;
-    document.getElementById("editorRoomSlug").textContent = `${room.slug} · ${room.status}`;
-    initEditor(room);
+    document.getElementById("editorRoomSlug").textContent = `${room.slug} - ${room.status}`;
+    renderTaskList();
+    renderTaskForm();
   } catch (error) {
     Admin.showToast(error.message, "error");
     setStatus(error.message, true);
     return;
   }
 
+  document.getElementById("addTaskBtn").addEventListener("click", addTask);
+  document.getElementById("emptyAddTaskBtn").addEventListener("click", addTask);
   document.getElementById("saveDraftBtn").addEventListener("click", () => saveContent(false));
   document.getElementById("publishBtn").addEventListener("click", () => saveContent(true));
-  document.getElementById("previewBtn").addEventListener("click", openPreview);
-  document.getElementById("toggleDeviceBtn").addEventListener("click", toggleDevice);
+  document.getElementById("addQuestionBtn").addEventListener("click", () => {
+    const task = selectedTask();
+    if (!task) return;
+    task.questions.push(blankQuestion(task.questions.length));
+    renderQuestions(task);
+    renderTaskList();
+  });
+  document.getElementById("deleteTaskBtn").addEventListener("click", () => {
+    const task = selectedTask();
+    if (!task || !Admin.confirmDelete(task.title)) return;
+    tasks = tasks.filter((item) => item.localId !== task.localId);
+    selectedTaskId = tasks[0]?.localId || null;
+    renderTaskList();
+    renderTaskForm();
+  });
+  taskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (collectFormIntoTask()) {
+      renderTaskList();
+      Admin.showToast("Task changes applied locally. Save draft or publish to persist.");
+    }
+  });
 }
 
 boot();

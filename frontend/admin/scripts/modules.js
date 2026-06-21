@@ -22,6 +22,7 @@ function moduleFormData() {
     title: document.getElementById("moduleTitle").value.trim(),
     slug: document.getElementById("moduleSlug").value.trim() || undefined,
     description: document.getElementById("moduleDescription").value.trim(),
+    coverImage: document.getElementById("moduleCoverImage").value.trim() || null,
     order: Number(document.getElementById("moduleOrder").value) || 0
   };
 }
@@ -78,6 +79,7 @@ function startEditModule(id) {
   document.getElementById("moduleTitle").value = mod.title;
   document.getElementById("moduleSlug").value = mod.slug;
   document.getElementById("moduleDescription").value = mod.description || "";
+  document.getElementById("moduleCoverImage").value = mod.coverImage || "";
   document.getElementById("moduleOrder").value = mod.order;
   document.getElementById("moduleFormTitle").textContent = "Edit Module";
   document.getElementById("moduleSubmitBtn").textContent = "Save Changes";

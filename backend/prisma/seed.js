@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { hashSecret } from "../src/utils/auth.js";
 
 const prisma = new PrismaClient();
 
@@ -51,7 +52,7 @@ const DEMO_ROOMS = [
     title: "Intro to Cyber Security",
     difficulty: "easy",
     duration: "1h",
-    tasksCount: 8,
+    tasksCount: 1,
     description: "Your first room! Learn what cybersecurity is and why it matters.",
     moduleSlug: "security-foundations",
     order: 0
@@ -61,7 +62,7 @@ const DEMO_ROOMS = [
     title: "Linux Fundamentals Part 1",
     difficulty: "easy",
     duration: "2h",
-    tasksCount: 12,
+    tasksCount: 1,
     description: "Get comfortable with the Linux command line — essential for every hacker.",
     moduleSlug: "linux-intro",
     order: 0
@@ -71,7 +72,7 @@ const DEMO_ROOMS = [
     title: "Intro to Networking",
     difficulty: "easy",
     duration: "1.5h",
-    tasksCount: 10,
+    tasksCount: 1,
     description: "Understand how devices communicate and how attackers scan networks.",
     moduleSlug: "networking-basics",
     order: 0
@@ -81,7 +82,7 @@ const DEMO_ROOMS = [
     title: "Web Fundamentals",
     difficulty: "easy",
     duration: "2h",
-    tasksCount: 14,
+    tasksCount: 1,
     description: "Learn how websites work — HTTP, DNS, and the building blocks of the web.",
     moduleSlug: "web-fundamentals-mod",
     order: 0
@@ -91,7 +92,7 @@ const DEMO_ROOMS = [
     title: "OWASP Top 10",
     difficulty: "medium",
     duration: "3h",
-    tasksCount: 18,
+    tasksCount: 1,
     description: "Explore the most critical web application security risks.",
     moduleSlug: "web-attacks",
     order: 0
@@ -101,7 +102,7 @@ const DEMO_ROOMS = [
     title: "SQL Injection",
     difficulty: "medium",
     duration: "2h",
-    tasksCount: 12,
+    tasksCount: 1,
     description: "Learn to find and exploit SQL injection flaws in web applications.",
     moduleSlug: "web-attacks",
     order: 1
@@ -111,7 +112,7 @@ const DEMO_ROOMS = [
     title: "Cryptography for Hackers",
     difficulty: "medium",
     duration: "2h",
-    tasksCount: 11,
+    tasksCount: 1,
     description: "Decode ciphers, crack hashes, and understand encryption fundamentals.",
     moduleSlug: "cryptography-mod",
     order: 0
@@ -177,7 +178,23 @@ async function main() {
         tasksCount: room.tasksCount,
         order: room.order,
         moduleId,
-        status: "PUBLISHED"
+        status: "PUBLISHED",
+        tasks: {
+          create: {
+            title: "Getting started",
+            contentHtml: `<p>${room.description}</p><p>Read the prompt below and submit the demo answer to verify the room flow.</p>`,
+            order: 0,
+            questions: {
+              create: {
+                blockId: "demo-question-1",
+                type: "TEXT",
+                prompt: "Type ready to complete this task.",
+                answerHash: await hashSecret("ready"),
+                order: 0
+              }
+            }
+          }
+        }
       }
     });
   }

@@ -41,7 +41,8 @@ router.get("/paths", async (req, res) => {
                   difficulty: true,
                   duration: true,
                   tasksCount: true,
-                  order: true
+                  order: true,
+                  _count: { select: { tasks: true } }
                 }
               }
             }
@@ -67,6 +68,7 @@ router.get("/rooms", async (req, res) => {
       duration: true,
       tasksCount: true,
       order: true,
+      _count: { select: { tasks: true } },
       module: {
         select: {
           title: true,
@@ -94,19 +96,26 @@ router.get("/rooms/:slug", async (req, res) => {
       duration: true,
       tasksCount: true,
       order: true,
-      contentHtml: true,
-      contentCss: true,
-      layoutJson: true,
-      questions: {
+      tasks: {
         orderBy: { order: "asc" },
         select: {
           id: true,
-          blockId: true,
-          type: true,
-          prompt: true,
+          title: true,
+          contentHtml: true,
+          imageUrl: true,
           order: true,
-          hints: true,
-          optionsJson: true
+          questions: {
+            orderBy: { order: "asc" },
+            select: {
+              id: true,
+              blockId: true,
+              type: true,
+              prompt: true,
+              order: true,
+              hints: true,
+              optionsJson: true
+            }
+          }
         }
       },
       module: {
@@ -134,20 +143,27 @@ router.get("/rooms/:slug", async (req, res) => {
     return res.status(404).json({ message: "Room not found." });
   }
 
-  const safeQuestions = room.questions.map((q) => ({
-    id: q.id,
-    blockId: q.blockId,
-    type: q.type,
-    prompt: q.prompt,
-    order: q.order,
-    hints: q.hints,
-    options: q.type === "MCQ" && q.optionsJson?.options ? q.optionsJson.options : undefined
+  const safeTasks = room.tasks.map((task) => ({
+    id: task.id,
+    title: task.title,
+    contentHtml: task.contentHtml,
+    imageUrl: task.imageUrl,
+    order: task.order,
+    questions: task.questions.map((q) => ({
+      id: q.id,
+      blockId: q.blockId,
+      type: q.type,
+      prompt: q.prompt,
+      order: q.order,
+      hints: q.hints,
+      options: q.type === "MCQ" && q.optionsJson?.options ? q.optionsJson.options : undefined
+    }))
   }));
 
   return res.json({
     room: {
       ...room,
-      questions: safeQuestions
+      tasks: safeTasks
     }
   });
 });
@@ -180,7 +196,7 @@ router.post("/rooms/:slug/submit", async (req, res) => {
 
   const question = await prisma.question.findFirst({
     where: {
-      roomId: room.id,
+      task: { is: { roomId: room.id } },
       ...(questionId ? { id: questionId } : { blockId })
     }
   });

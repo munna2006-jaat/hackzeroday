@@ -46,6 +46,53 @@
   line-height: 1.65;
 }
 
+.room-task {
+  padding: 1.25rem 0 2rem;
+  border-bottom: 1px solid rgba(151, 255, 194, 0.12);
+}
+
+.room-task:last-child {
+  border-bottom: 0;
+}
+
+.room-task-kicker {
+  margin-bottom: 0.35rem;
+  color: #36f58f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.room-task h2 {
+  margin: 0 0 0.85rem;
+}
+
+.room-task-image {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  margin: 1rem 0;
+  border-radius: 8px;
+  border: 1px solid rgba(151, 255, 194, 0.16);
+}
+
+.room-task-content {
+  color: var(--text, #f3fff8);
+}
+
+.room-task-content pre {
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(7, 9, 7, 0.72);
+  border: 1px solid rgba(151, 255, 194, 0.14);
+}
+
+.room-task-questions {
+  margin-top: 1rem;
+}
+
 .room-content .hzd-question-block,
 .room-content .hzd-flag-block {
   border: 1px solid rgba(54, 245, 143, 0.2);

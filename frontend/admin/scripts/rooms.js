@@ -54,7 +54,7 @@ function renderRoomsTable() {
         <td>${Admin.badgeStatus(room.status)}</td>
         <td>
           <div class="table-actions">
-            <a href="editor.html?roomId=${room.id}" class="btn btn-ghost btn-sm">Edit Content</a>
+            <a href="editor.html?roomId=${room.id}" class="btn btn-ghost btn-sm">Edit Tasks</a>
             <button type="button" class="btn btn-ghost btn-sm" data-edit-room="${room.id}">Edit</button>
             <button type="button" class="btn btn-danger btn-sm" data-delete-room="${room.id}">Delete</button>
           </div>
